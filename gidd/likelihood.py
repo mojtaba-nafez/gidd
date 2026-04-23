@@ -4,7 +4,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import tqdm.auto as tqdm
 import torch.distributed as dist
-from transformers import PreTrainedModelForCausalLM
+from transformers import PreTrainedModel
 
 
 class ELBO(nn.Module):
@@ -16,9 +16,11 @@ class ELBO(nn.Module):
         self.loss_fn = loss_fn
 
     def forward(self, input_ids, attention_mask, t):
-        z_t, tgt_features = self.noise_schedule.sample_zt(input_ids, t)
+        # z_t, tgt_features = self.noise_schedule.sample_zt(input_ids, t)
+        z_t = self.noise_schedule.sample_zt(input_ids, t)
         outputs = self.model(z_t, t)
-        _, elbo, _ = self.loss_fn(outputs, tgt_features, input_ids, attention_mask, z_t, t, reduction="none")
+        _, elbo, _ = self.loss_fn(outputs, input_ids, attention_mask, z_t, t, reduction="none")
+        # _, elbo, _ = self.loss_fn(outputs, tgt_features, input_ids, attention_mask, z_t, t, reduction="none")
         return elbo
 
 
@@ -54,7 +56,7 @@ def compute_elbo(elbo_fn: ELBO, batch, num_samples=128, t_eps=1e-4, return_token
     return (metrics, token_nlls) if return_token_nlls else metrics
 
 
-def compute_causal_nll(model: PreTrainedModelForCausalLM, batch, reduce_metrics=False, return_token_nlls=False):
+def compute_causal_nll(model: PreTrainedModel, batch, reduce_metrics=False, return_token_nlls=False):
     labels = batch["input_ids"][:, 1:]
     loss_mask = batch["attention_mask"][:, :-1]
 

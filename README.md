@@ -94,7 +94,7 @@ You can download our original training checkpoints from here: https://polybox.et
 #### Generate samples
 The following command will generate `num_samples=16` samples in `num_denoising_steps=128` iterations from the model checkpoint located at `path` and save them to `samples_dir=samples.pt`.
 ```bash
-python gidd/eval/generate_samples.py path=./outputs/path/to/checkpoint/ samples_path=samples.pt num_samples=16 num_denoising_steps=128 batch_size=16
+python gidd/eval/generate_samples.py path="/idiap/temp/mnafez/research/gidd/weights/gidd-base-pu-0.2" samples_path=samples.pt num_samples=16 num_denoising_steps=128 batch_size=16
 ```
 
 #### Generative PPL
@@ -102,18 +102,40 @@ Given a file containing samples generated with the `generate_samples.py` script,
 Here we assume that the diffusion model used to generate samples located at `samples.pt` uses the `gpt2` tokenizer, and we compute generative PPL using `google/gemma-2-9b` as a reference model (note that `gemma-2-9b` requires you to log into your HF account using `huggingface-cli login`).
 The results will be saved to `metrics_path=metrics.json`.
 ```bash
-python gidd/eval/generative_ppl.py samples_path=samples.pt model_tokenizer=gpt2 pretrained_model=google/gemma-2-9b batch_size=4 metrics_path=metrics.json
+python gidd/eval/generative_ppl.py samples_path=samples.pt model_tokenizer=gpt2 pretrained_model=google/gemma-2-9b batch_size=1 metrics_path=metrics.json
 ```
 
 #### Validation loss
 A simple helper script to compute the loss of a trained model on the entire validation split.
 ```bash
-python gidd/eval/loss.py path=./outputs/path/to/checkpoint/ batch_size=32
+python gidd/eval/loss.py path="/idiap/temp/mnafez/research/gidd/weights/gidd-base-pu-0.2" batch_size=32
 ```
 
 #### Self-correction
 This script will run the self-correction step on the samples contained in `samples.pt` (e.g. generated with the `generate_samples.py` script) and save the corrected samples to `corrected_samples.pt`.
 The `temp` argument controls the temperature used when resampling tokens from the model (see paper for more details).
 ```bash
-python gidd/eval/self_correction.py path=./outputs/path/to/checkpoint/ samples_path=samples.pt corrected_samples_path=corrected_samples.pt batch_size=16 num_denoising_steps=128 temp=0.1
+python gidd/eval/self_correction.py path="/idiap/temp/mnafez/research/gidd/weights/gidd-base-pu-0.2" samples_path=samples.pt corrected_samples_path=corrected_samples.pt batch_size=16 num_denoising_steps=128 temp=0.1
 ```
+
+
+python gidd/eval/generate_samples.py path="/idiap/temp/mnafez/research/gidd/weights/gidd-base-pu-0.2" samples_path=samples.pt num_samples=16 num_denoising_steps=128 batch_size=16
+
+
+python gidd/eval/generative_ppl.py samples_path=samples.pt model_tokenizer=gpt2 pretrained_model=google/gemma-2-9b batch_size=1 metrics_path=metrics-corrected_samples_noisy_N3.json
+
+
+python gidd/eval/self_correction.py path="/idiap/temp/mnafez/research/gidd/weights/gidd-base-pu-0.2" samples_path=/idiap/temp/mnafez/research/gidd/samples_1024_original.pt corrected_samples_path="/idiap/temp/mnafez/research/gidd/corrected_samples_noisy_N4_2.pt" batch_size=128 num_denoising_steps=128 temp=0.1
+
+
+python -m lm_eval --model gidd --tasks hellaswag     --model_args "model_path=./weights/gidd-base-pu-0.2,num_denoising_steps=128" --limit 10
+
+
+------------
+
+
+python gidd/eval/self_correction.py path="/idiap/temp/mnafez/research/gidd/weights/gidd-base-pu-0.2" samples_path=/idiap/temp/mnafez/research/gidd/samples_1024_original.pt corrected_samples_path="/idiap/temp/mnafez/research/gidd/corrected_samples_original_temp0-8.pt" batch_size=128 num_denoising_steps=128 temp=0.8
+
+
+
+python gidd/eval/generative_ppl.py samples_path=/idiap/temp/mnafez/research/gidd/corrected_samples_original_temp0-8.pt model_tokenizer=gpt2 pretrained_model=google/gemma-2-9b batch_size=1 metrics_path=metrics_corrected_samples_temp0-8.json

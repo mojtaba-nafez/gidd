@@ -358,7 +358,7 @@ class DIT(nn.Module, huggingface_hub.PyTorchModelHubMixin):
 
     self.config = config
     self.vocab_size = vocab_size
-    self.rounded_vocab_size = vocab_size + (128 - vocab_size % 128) % 128
+    self.rounded_vocab_size = vocab_size # + (128 - vocab_size % 128) % 128
 
     self.vocab_embed = EmbeddingLayer(config.model.hidden_size, self.rounded_vocab_size)
     self.sigma_map = TimestepEmbedder(config.model.cond_dim)
@@ -396,8 +396,71 @@ class DIT(nn.Module, huggingface_hub.PyTorchModelHubMixin):
     c = F.silu(self.sigma_map(sigma))
 
     rotary_cos_sin = self.rotary_emb(x)
-
     for i in range(len(self.blocks)):
+      ''' # 242
+      if i in [8, 10, 12, 14, 16, 18, 20]:
+        std = x.std(unbiased=False).detach()
+        noise_std = 0.005
+        x = x + torch.randn_like(x) * (noise_std * std)
+      '''
+      ''' # 251
+      if i in [6, 8, 10, 12, 14, 16, 18, 20, 22]:
+              std = x.std(unbiased=False).detach()
+              noise_std = 0.007
+              x = x + torch.randn_like(x) * (noise_std * std)
+      '''
+     
+      ''' # 261.5
+      if i in [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22]:
+        std = x.std(unbiased=False).detach()
+        noise_std = 0.002
+        x = x + torch.randn_like(x) * (noise_std * std)
+      '''
+
+      ''' # 236.16237019656404
+      if i in [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22]:
+        std = x.std(unbiased=False).detach()
+        noise_std = 0.001
+        x = x + torch.randn_like(x) * (noise_std * std)
+      '''
+
+      ''' # 327.7363698609388
+      if i in [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22]:
+        std = x.std(unbiased=False).detach()
+        noise_std = 0.0005
+        x = x + torch.randn_like(x) * (noise_std * std)
+      '''
+      
+      # # 231.0834165578764 # 220 # N1
+      # if i in [6, 8, 10, 12, 14, 16, 18, 20, 22]:
+      #   std = x.std(unbiased=False).detach()
+      #   noise_std = 0.004
+      #   x = x + torch.randn_like(x) * (noise_std * std)
+      
+      # # 242 # N2
+      # if i in [8, 10, 12, 14, 16, 18, 20]:
+      #   std = x.std(unbiased=False).detach()
+      #   noise_std = 0.007
+      #   x = x + torch.randn_like(x) * (noise_std * std)
+       
+      # # 242 # N3
+      # if i in [8, 10, 12, 14, 16, 18, 20]:
+      #   std = x.std(unbiased=False).detach()
+      #   noise_std = 0.01
+      #   x = x + torch.randn_like(x) * (noise_std * std)
+      
+      # # 242 # N4
+      # if i in [8, 10, 12, 14, 16, 18, 20]:
+      #   std = x.std(unbiased=False).detach()
+      #   noise_std = 0.05
+      #   x = x + torch.randn_like(x) * (noise_std * std)
+      
+      #  #  # N5 
+      # if i in [8, 10, 12, 14, 16, 18, 20]:
+      #   std = x.std(unbiased=False).detach()
+      #   noise_std = 0.1
+      #   x = x + torch.randn_like(x) * (noise_std * std)
+      
       x = self.blocks[i](x, rotary_cos_sin, c, seqlens=None)
     x = self.output_layer(x, c)
 

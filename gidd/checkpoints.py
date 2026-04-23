@@ -47,12 +47,14 @@ def save_checkpoint(path, trainer: DiffusionTrainer, optimizer, state: TrainingS
 
 
 def load_checkpoint(path, device=None):
+    print(Path(path, "config.yaml"))
     config = OmegaConf.load(Path(path, "config.yaml"))
 
     tokenizer = AutoTokenizer.from_pretrained(path)
 
     model_state_dict = torch.load(Path(path, "model.pt"), map_location="cpu", weights_only=True)
     model = get_model(config, tokenizer, device="cpu")
+
     model.load_state_dict(model_state_dict)
     if device is not None:
         model.to(device)

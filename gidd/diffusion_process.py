@@ -90,6 +90,10 @@ class HybridDiffusion(NoiseSchedule):
     
     def probs_at_t(self, prs, t, eps=1e-4):
         orig_dtype = prs.dtype
+        # alpha_t: a fix problity to keep the current model prediction for each token.
+        # beta_pi: comibation tow distribtion:
+        #               1. a mass just for mask token
+        #               2. a uniform distribution for non-mask tokens 
         alpha_t, beta_pi = self.get_alpha_betapi(t, eps=eps)
 
         probs = prs.mul(alpha_t.unsqueeze(-1))

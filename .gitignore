@@ -8,3 +8,16 @@ wandb
 .vscode
 logs
 cache
+
+# model outputs / artifacts
+samples*.pt
+corrected_samples*.pt
+metrics*.json
+metrics.csv
+run_logs.txt
+
+# local model weights
+weights/
+
+# local cloned dependency
+

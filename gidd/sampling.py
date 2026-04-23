@@ -23,7 +23,7 @@ class Sampler(nn.Module):
 
     @torch.no_grad()
     def generate(self, num_samples=1, num_denoising_steps=1000, max_length=None, decode=True, show_progress=True):
-        max_length = max_length or self.model.config.max_seq_len
+        max_length = max_length or self.model.config.model.max_seq_len
         device = next(self.model.parameters()).device
 
         z_t = self._do_generate(num_samples, num_denoising_steps, max_length, show_progress=show_progress, device=device)
@@ -45,24 +45,44 @@ class GiddSampler(Sampler):
             self.min_p = min_p
 
         def forward(self, z_t, t, s):
+            # t: more mask  ---  s: less mask
+            # z_t.shape: torch.Size([1, 512])
+            # t.shape:   torch.Size([1]) 
+            # s.shape:   torch.Size([1])
             logits = self.model(z_t, t)
+            # logits.shape: torch.Size([1, 512, 50258])
             logits[..., self.tokenizer.mask_token_id] = -1e6
 
             # if i > 0:
             q_s = self.noise_schedule.probs_at_t(logits.softmax(-1), s)
             q_t = self.noise_schedule.probs_at_t(logits.softmax(-1), t)
             q_zt = q_t.gather(-1, z_t.unsqueeze(-1))
+            
+            # q_s.shape:  torch.Size([1, 512, 50258]) 
+            # q_t.shape:  torch.Size([1, 512, 50258])
+            # q_zt.shape: torch.Size([1, 512, 1])
 
             alpha_t, beta_pi_t = self.noise_schedule.get_alpha_betapi(t)
             alpha_s, beta_pi_s = self.noise_schedule.get_alpha_betapi(s)
+            # alpha_t.shape:   torch.Size([1, 1]) 
+            # beta_pi_t.shape: torch.Size([1, 50258]) 
+            # alpha_s.shape:   torch.Size([1, 1]) 
+            # beta_pi_s.shape: torch.Size([1, 50258])
+            # beta_pi_ts.shape: torch.Size([1, 50258])
 
+            # alpha_ts: probability mass for keeping the token from z_s (in coruption transition from s to t)
+            # beta_pi_ts: if the token is not preserved, where does the corruption mass go?
+            # beta_pi_ts_at_zt: corruption mass assigned specifically to the token that actually appeared in z_t
             alpha_ts = alpha_t / alpha_s
             beta_pi_ts = beta_pi_t - alpha_t / alpha_s * beta_pi_s
-
+            
             vz_t = F.one_hot(z_t, num_classes=len(self.tokenizer))
             beta_pi_ts_at_zt = beta_pi_ts.unsqueeze(1).expand_as(vz_t).gather(-1, z_t.unsqueeze(-1))
             q_ts = (alpha_ts * vz_t + beta_pi_ts_at_zt)
-
+            # vz_t.shape:               torch.Size([1, 512, 50258])
+            # beta_pi_ts_at_zt.shape:   torch.Size([1, 512, 1])
+            # q_ts.shape:               torch.Size([1, 512, 50258])            
+            
             q_st = q_ts * q_s / q_zt
             if self.min_p > 0.0:
                 is_small = (q_st < self.min_p).float()
@@ -80,11 +100,41 @@ class GiddSampler(Sampler):
 
         ts = torch.linspace(0, 1, num_denoising_steps + 1, device=device).unsqueeze(-1)
         ts = (1 - 2 * self.t_eps) * ts + self.t_eps
-
+        # ts: torch.Size([129, 1]) - [0, 0.001, ..... 0.999, 1]
         # zt = sample_categorical(p_zt)
+        
+        mask_id = self.tokenizer.mask_token_id
         z_t = self.noise_schedule.sample_prior((num_samples, max_length)).to(device, non_blocking=True)
+        # z_t shape: torch.Size([1, 512]) - [[50257, 50257, ..., 50257, 50257]]
+        step_stats = []
+        
         for i in tqdm.trange(num_denoising_steps - 1, -1, -1, desc="Generating samples", disable=not show_progress, dynamic_ncols=True):
+            # prev_z_t = z_t
             z_t = self.sampling_step(z_t, ts[i], ts[max(0, i-1)]).clone()
+        '''
+            changed = prev_z_t != z_t
+            prev_mask = prev_z_t == mask_id
+            new_mask = z_t == mask_id
+
+            mask_to_word = (changed & prev_mask & ~new_mask).sum().item()
+            word_to_mask = (changed & ~prev_mask & new_mask).sum().item()
+            word_to_word = (changed & ~prev_mask & ~new_mask).sum().item()
+
+            total_changed = mask_to_word + word_to_mask + word_to_word
+
+            step_stats.append({
+                "step": i,
+                "total_changed": total_changed,
+                "mask_to_word": mask_to_word,
+                "word_to_mask": word_to_mask,
+                "word_to_word": word_to_word,
+            })
+
+        print("sum total_changed:", sum(x["total_changed"] for x in step_stats))
+        print("sum mask_to_word:", sum(x["mask_to_word"] for x in step_stats))
+        print("sum word_to_mask:", sum(x["word_to_mask"] for x in step_stats))
+        print("sum word_to_word:", sum(x["word_to_word"] for x in step_stats))
+        '''
         return z_t
 
 

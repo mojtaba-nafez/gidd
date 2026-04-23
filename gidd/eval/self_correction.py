@@ -11,15 +11,16 @@ from gidd.utils import sample_categorical
 def correction_step(model, tokenizer, z_t, t, temp, tokens_per_step):
     logits = model(z_t, t)
     logits[..., tokenizer.mask_token_id] = -1e6
-
     p_t = (logits / temp).softmax(-1)
-
+    # p_t.shape: torch.Size([1, 512, 50258])
     z_tm1 = sample_categorical(p_t)
+    # z_tm1.shape: torch.Size([1, 512])
     score = (z_tm1 != z_t) * p_t.gather(-1, z_tm1.unsqueeze(-1)).squeeze(-1)
-
+    # score.shape: torch.Size([1, 512])
     ids = torch.topk(score, tokens_per_step, dim=-1).indices
+    # ids.shape: torch.Size([1, 1])
     z_tm1 = z_t.scatter(-1, ids, z_tm1.gather(-1, ids))
-
+    # z_tm1.shape: torch.Size([1, 512])
     acc = (z_tm1 == logits.argmax(-1)).float().mean().item()
     return z_tm1, acc
 
@@ -88,6 +89,7 @@ def main(args):
         })
     samples = torch.cat(samples, dim=0).cpu()
 
+    print("args.corrected_samples_path", args.corrected_samples_path)
     torch.save(samples, args.corrected_samples_path)
 
     df = pd.DataFrame(metrics)

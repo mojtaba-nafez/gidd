@@ -23,7 +23,6 @@ def main(args):
     tokenizer = AutoTokenizer.from_pretrained(args.pretrained_model)
     if tokenizer.pad_token_id is None:
         tokenizer.pad_token = tokenizer.eos_token
-
     if args.torch_compile:
         model = torch.compile(model)
 
@@ -38,6 +37,7 @@ def main(args):
     total_nll = 0
     total_tokens = 0
     all_nlls = []
+    per_sample = []
     with torch.no_grad():
         for i in tqdm.trange(0, len(texts), args.batch_size, desc="Inference", dynamic_ncols=True):
             xs = texts[i:i + args.batch_size]
@@ -59,6 +59,17 @@ def main(args):
 
             total_tokens += loss_mask.sum().item()
 
+            sample_nll = (nll * loss_mask).sum(dim=1) / loss_mask.sum(dim=1).clamp_min(1)
+            sample_ppl = torch.exp(sample_nll)
+
+            for text, ppl_i in zip(xs, sample_ppl.cpu().tolist()):
+                per_sample.append({
+                    "text": text,
+                    "ppl": ppl_i,
+                })
+                
+            # if i > 10:
+            #     break
 
     nll = total_nll / total_tokens
     ppl = np.exp(total_nll / total_tokens)
@@ -72,11 +83,20 @@ def main(args):
         "ppl": ppl,
         "acc": acc,
         "tokens": total_tokens,
+        "per_sample": per_sample
     }
 
     print(json.dumps(metrics, indent=4))
     print("=== RESULTS ===")
-    print(",".join(map(str, metrics.values())))
+    print(",".join(map(str, [
+        metrics["file"],
+        metrics["pretrained_model"],
+        metrics["median_nll"],
+        metrics["avg_nll"],
+        metrics["ppl"],
+        metrics["acc"],
+        metrics["tokens"],
+    ])))
     print("===============")
 
     with open(hydra.utils.to_absolute_path(args.metrics_path), "w") as f:

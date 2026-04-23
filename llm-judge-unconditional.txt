@@ -1,0 +1,529 @@
+Core takeaway:
+
+Both models are very weak in absolute terms.
+Both outputs frequently show:
+broken syntax
+nonsensical phrasing
+poor coherence
+low factual reliability
+very low practical usefulness
+The evaluations are mostly trying to judge them relative to small ~200M-parameter models trained on limited data, not against strong modern LLMs.
+
+Most common conclusion:
+
+LLM A wins slightly
+Why:
+better topic continuity
+slightly clearer meaning
+somewhat smoother sentence flow
+fewer severe corruptions than B
+
+Minority conclusion:
+
+LLM B wins narrowly
+Why:
+sometimes a bit better local grammar
+slightly more readable sentence structure in a few samples
+occasionally less chaotic than A
+
+Overall meta-summary:
+
+Neither model is good
+LLM A appears stronger overall across the full set
+LLM B occasionally does better on local fluency, but not consistently
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Act as an unbiased evaluator and compare the final outputs of two trained LLMs. Both models are relatively small, around 200M parameters, and were trained on relatively small corpora, so judge them fairly within that context rather than against much stronger models. Evaluate each response for coherence, clarity, grammar and fluency, and overall usefulness. For each criterion, briefly explain how each model performs and include a score out of 10 where helpful. Then summarize the main strengths and weaknesses of both models, identify which model is stronger overall, and explain your judgment clearly, fairly, and concisely, with an emphasis on relative performance and improvement given the models’ size and training limitations.
+============LLM A==============
+"payments on top of $1.5 million, or $465,000 to the company over and years, the board said on Tuesday. That will be in addition to theades negotiated roster changes and other awards such as bonuses and grants totaling $3.4 million.\n\nAnd here and there we see where that money came from. Because a big chunk of the money actually paid back to the Astros contractors; let me show you, in the expense portion of the spreadsheet (minus 2015) the per-year share of the money that went to 10/15, the owner of the Astros, 10/15. Like, not quite sure how much limiting'll be paid, but it doesn't go far. whispers, all of $465,000, is what it is. Wouldn't you want to pay a percentage of that in 2016?\n\nThe next slide shows that $2 million is a payment for more than 30 games, for the roster, a total of $78,000 forO at-bats. This matters because in 2014 there were 162 games in the regular season, and the Astros nearly won it all. Here's the money, inoney chest $4 million for 171 games for the come-to-be.\n\nSo the Astros' message was well, I've got all that. You have to play a little game, use a calculator, take a little out, and throw out the biggest check. But what does it actually do?\n\n 35 it's not outage clear how the add-on will be paid to the payroll, for life.\n\nThe Gibson say is that they wanted to hide it. I don't know the truth of the subtracting the surplus, but it's 8 percent of that Col the team, over 20 years. That's faith in your own. Then there are the questions about nearly, which, obviously, is less important than the question of the health. Why would you want someone in your teamap your manager, especially your manager, has a no chance to crew the roster, and These are madmen right now. The auodores, who hold the seats of the club, and have no sense of to ask what led them to this. The club members na\u00efvely seem to think this miscue will known outweigh the success in 2016; presumably it has a level of foolishness to let that. Not only does it allow them to kill off all of it, it allows a chance to look forward to a brighter future.\n\nDo you think the Astros"
+
+============LLM B==============
+" payments on and of $1.5 million, or $465,000 to the company over 20 years, the board said on Tuesday. That will be in addition to theades negotiated roster changes and other awards such as contracts and grants totaling $3.4 million.\n\nAnd here and there we see where that money came from. Because a big chunk of the payroll actually paid back to the Astros contractors; let me show you, in the expense portion of the spreadsheet (minus 2015) the per-post share of the equality money went to 10/15; the revenues of the Astros is 10/15. Like, not quite sure how much limiting will be in 2015 and it doesn't go far far, in terms of $465,000, by what it means. Wouldn't you want to pay a percentage of that in 2016?\n\nThe next slide shows that $2 million is a payment for less than 30 days - within the roster, a percentage of $78,000 forO at-bats. That matters; in 2014 there were 162 games in the regular season, and the Indians nearly won it all. Here's the big shot in the chest $4 million for 171 days for that come-to-be.\n\nSo the Astros' message was well, I've got all that. You have to play the financial game: use a gimmick, make a stretch run, and throw out the big check. But what does it actually contribute?\n\nAnd it's not outage clear how the add-on will be paid to the payroll, for life.\n\nThe Gibson say is that they wanted to hide it. I don't know the truth of the subtractus of surplus, but it's 8 percent of that Col the team, over 20 years. That's faith in your own. Then there are the questions about nearly, which, obviously, is less important than the question of the health. Why would you want someone in your teamap your team, especially your team, has a no chance to improve the roster, and there are no obligations right now. The auodores, who hold the seats of the club members, have no grasp of the ask that led them to this. The club members na\u00efvely have to think this miscue will known outweigh the success in 2016; presumably it takes a level of foolishness to let that. Not only does it allow you to kill off hope for 2016, it allows a chance to look here to a brighter future.\n\nDo you think the Astros"
+
+
+* Gemini Fast: LLM A
+    -
+* GPT-5: LLM A
+    -
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Act as an unbiased evaluator and compare the final outputs of two trained LLMs. Both models are relatively small, around 200M parameters, and were trained on relatively small corpora, so judge them fairly within that context rather than against much stronger models. Evaluate each response for coherence, clarity, grammar and fluency, and overall usefulness. For each criterion, briefly explain how each model performs and include a score out of 10 where helpful. Then summarize the main strengths and weaknesses of both models, identify which model is stronger overall, and explain your judgment clearly, fairly, and concisely, with an emphasis on relative performance and improvement given the models’ size and training limitations.
+============LLM A==============
+" Ichanges watching everything except for the judges that I think are going to increase growth,\" he said.\n\n\"There's always been a section that regulations were not going to grow the economy or the economy or make people feel good, in the right way,\" he said. \"But I knew that because when the regulations came out, it was just common sense. So it's always been clear that regulations never work, they just don't.\"\n\nThe opposition was there, the negative association with regulations had to have been there, he said.\n\nThe regulations were always unproven, not evidence-based, and therefore not worth pursuing.\n\n\"It's horrifying very, very clear that they had a Ori effect of working against growth. I was so birth ofos when the regulations came out, knowing that they were not working, but there had to be a big tax change.\"\n\nThat changed in April 2005, however, thanks to librarian Tyler Hughes.\n\nTyler Hughes says in 2005 he helped get his employees a raise, but he fears that the big changes are about to come. (Richard Millard/Calgary Herald archives)\n\n\"It was absolutely crazy, but we're now seeing the progress of the changes to come through, which I think, from the very beginning, had been coming for a long time,\" he said.\n\nThe salary also went from under $100 in 2005 to $100 in, and to $100 in thats, he said.\n\nThe organization, which provides efficiency and stress management services to its employees, expects a hopes in costs.\n\n\"There are going to be expenses and the changes that have been made are taking on enforce academic, and we're that the impact will be the same one that we had last year,\" said Hughes.\n\nThe decrease in technology coincides with the tax increase back at the Calgary Public Library. The GST Act of pieces took effect Jan. 1.\n\nBouleau-La lend said the organization was well prepared when the change was announced.\n\n\"We actually didn't have a little bit of a thought about what changes we were going to make until then, to feelBut we had to make an adjustment with the GST Act change,\" he said. \"We were really prepared. We refreshed all our equipment and schedules.\"\n\nThe Citizen's Association for the Tax Bureau is doing its best to prepare the way for the and, he said.\n\n\"I see the numbers going up as well, but"
+
+============LLM B==============
+" Ichanges for it, for the things that I think are going to stimulate growth,\" said Armstrong.\n\n\"There's always been a section that regulations were not going to stimulate the economy or the economy or make people feel good or in the right places,\" he said. \"But I knew that because when the regulations came out, it was just common sense. And it was always very clear that regulations sometimes work and sometimes they don't.\"\n\nThe opposition wasvent, any negative association with regulations had to have been separatist, he said.\n\nThe regulations were always unproven, not science-based, and therefore not worth pursuing.\n\n\"It was always very, very clear that they had their own strategy of fighting against regulations. I was so birth ofos when the regulations came out, knowing that they were not working, but there had to be a big change coming.\"\n\nThat changed in April 2013, however, thanks to librarian Tyler Hughes.\n\nTyler Hughes says in 2013 he helped get his employees a raise, but he fears that more big changes are about to come. (Richard Millard/Calgary Sun archives)\n\n\"It was pretty crazy, but we're slowly seeing the progress of the changes to come through, which I think, from the very beginning, has been coming for a long time,\" he said.\n\nThe increase also went up from $100 in 2004 to $100 in 2009 and then $100 in 2013, he said.\n\nThe organization, which provides efficiency and stress management services to federal employees, expects a hopes in costs.\n\n\"There are going to be increases and the changes that have been made are taking on enforce academic, so we're hoping the increase will be the same increase that we had last year,\" said Hughes.\n\nThe increase in costs coincides with the same increase back at the Calgary Public Library. The Tax Act of pieces took effect Jan. 1.\n\nBrouleau-Weing said the organization was all prepared when the change was announced.\n\n\"We actually didn't have a little bit of a thought about what changes we were going to make until then, to see if we had to make an adjustment with the Tax Act change,\" he said. \"We were really prepared. We refreshed all our equipment and schedules.\"\n\nThe Citizen's Association for Tax Reform also is doing its best to prepare the way for the and, he said.\n\n\"I see the numbers going up as well, but"
+
+
+
+* Gemini Thinking: LLM B
+    -
+* GPT-5: LLM B
+    -
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Act as an unbiased evaluator and compare the final outputs of two trained LLMs. Both models are relatively small, around 200M parameters, and were trained on relatively small corpora, so judge them fairly within that context rather than against much stronger models. Evaluate each response for coherence, clarity, grammar and fluency, and overall usefulness. For each criterion, briefly explain how each model performs and include a score out of 10 where helpful. Then summarize the main strengths and weaknesses of both models, identify which model is stronger overall, and explain your judgment clearly, fairly, and concisely, with an emphasis on relative performance and improvement given the models’ size and training limitations.
+============LLM A==============
+"I think men who don\u2019t really have aren are bad at comedy, physical comedy (playing like a fiddle) and \u201cjust consider a couple of couple to a good amount of pop.\u201d not funny (as it is the former, I mean no worse than some of the latter of course, and broad there\u2019s seriousness here).\n\nThe song is a comedy song but the lyrics don\u2019t know it. As I was saying, Not a Grown-ins really did have a great, sappy song to the shows =). You and Mr. Brown is one of my favorites as far as country music. \u201cRapid Bread\u201d also from Pavement is a country song. I\u2019m a fan of \u201cBry\u201d by Mother, Raspberry presents,ov you know, my very favorite. They\u2019re \u201cmostly\u201d in the \u201cpeople\u201d but they\u2019re way more \u201cnew Modest to Pavement\u2019s\u201d than a fan of the band\u2019s the ills, a people band. What have you thought? Making babies? I actually avoid doing that at all as I only C movies or whatever for about and I would listen and laugh at them. We would go out to dinner and the time we finished up onorg nights, but you rarely sing along about it, right?\n\nGirls? Classic tips like the \u201cSummer gettin\u2019 Invalid\u201d and \u201cAre you so cute? I\u2019ve never met her and I have felt what I find funny more these days; guy\u2019s babies are worse. Remember Grandpa Who gets hugs from trophies.\ufffd?)\n\nThe door to the editor. I hope you can readFull matter! (and go ahead and leave a comment; say again; a reader with a positive response about this blog post)"
+
+
+============LLM B==============
+
+"I think men who don\u2019t really have it all bad in humor, physical acting (sing like a fawn) and music (maybe consider a couple), listen to a good amount of pop.\u2019s funny (as it is the former, I mean no worse than some of the latter of course) or broad (\u2021ufficient seriousness here):\n\nThe song is a comedy song \u2013 the lyrics don\u2019t know that. As I was saying, Not a Grown-ins really did have a great, pokey intro to some shows =) Thank You, Mr. God is one of my favorites as far as wide music. \u201cRapid Bread\u201d, from Pavement is a country hit. I\u2019m a fan of \u201cPerry\u201d by Mother, Raspberry is, as you know, my very favorite. They\u2019re \u201cmostly\u201d inymes \u201cpeople\u201d but they\u2019re way more \u201cnew Modest to Pavement\u2019s\u201d than a fan of the band\u2019s the Stills, a people band. What have I thought? Making babies? I actually avoid doing that at all as I only watch movies or whatever for about and I just laugh and laugh at them. We would go out to dinner and the time we finished up onorg nights, but I rarely sing along about it, right?\n\nGirls? Classic songs like the \u201cSummer gettin\u2019 Invalid\u201d and \u201cAre you so cute? I\u2019ve never met you and I have felt what I find funny more these days; guy\u2019s babies are worse. Remember Grandpa who gets hugs from trophies.\u201d\n\nThe letter to the editor. I hope you can readFull matter! (and go ahead and leave a comment; say again; a reader with a positive response to this blog post)"
+
+
+* Gemini Thinking: LLM B
+    -
+* GPT-5: LLM B
+    -
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Act as an unbiased evaluator and compare the final outputs of two trained LLMs. Both models are relatively small, around 200M parameters, and were trained on relatively small corpora, so judge them fairly within that context rather than against much stronger models. Evaluate each response for coherence, clarity, grammar and fluency, and overall usefulness. For each criterion, briefly explain how each model performs and include a score out of 10 where helpful. Then summarize the main strengths and weaknesses of both models, identify which model is stronger overall, and explain your judgment clearly, fairly, and concisely, with an emphasis on relative performance and improvement given the models’ size and training limitations.
+============LLM A==============
+" state and DC.\n\nThe rally was large and in full view. Thousands of police and law enforcement officers waved and waved, from ear to ear, made their remarks as the march walked the National Mall.\n\nRELATED: Marijuana on the Beltway: Legal Or Not: What\u2019s Legal?\n\n.\n\nSome spoke about the state-induced aspects of legalization.\n\n\u201cNo matter where we go, if we don\u2019t get high, we still fall somewhere,\u201d said John Vasquez. \u201cI hope people come up all around us with the message that it\u2019s possible. Billions of people are talking now about the legalization of cannabis. It\u2019s going to be a dream.\u201d\n\nGreenman walked about safety forgency patients. Other people, such as marketing for second generation businesses who comply with D.C.\n\n\u201cBrewing and shopping,\u201d said he happened\u00e4smann, a cousin and business owner. \u201cAll the things that it could do.\u201d\n\nOthers spoke, if only briefly, about the expenses. Some spoke about that.\n\n\u201cI don\u2019t know, not only about the amount of taxes because it\u2019s not related to cannabis, but about the else,\u201d said Billey Sona. \u201cIt\u2019s how much that they are funneling from the government into this business.\u201d\n\nAnd while the afternoon march event some people foraught way home, today there were many who stayed. Intentionally, those from the states nearby that either support or oppose legalization.\n\n\u201cIt makes the acceptance of it a little bit easier out here, too,\u201d one Allan said. \u201cYou\u2019re more welcome here.\u201d\n\nEvery third of the march that passed was remembered.\n\nMany people smoked. Some got a free bong or phone to give them a vial.\n\n\u201cIt makes me feel better here in Colorado than it does up here here in Colorado,\u201d oneOr said.\n\nOthers came out to see the message of legalization but as a family and familyma.\n\n\u201cWe had more adults with our kids joining us,\u201d Raina Van Everybodyard said. \u201cSo, really happy that they witchcraft.\u201d\n\nWhile they did not stop to hang out most of the older marijuana advocates came out and had a chance to see"
+
+
+============LLM B==============
+" state and DC.\n\nThe rally was large and in full view. Thousands of police and law enforcement officers waved and waved, whispered ent to pic and made their remarks as the people walked the National Mall.\n\nRELATED: Weed on the Beltway: Legal Or Not: What\u2019s Legal At The Protest\n\nBaird spoke about the state-induced aspects of legalization.\n\n\u201cNo matter where we go, if we don\u2019t get high, we still fall somewhere,\u201d said John Vasquez. \u201cI hope people come up all around us with the message that it\u2019s possible. Billions of people are talking now about the legalization of cannabis. It\u2019s going to be a dream.\u201d\n\nGreenberg walked about safety forgency patients. Other people, such as marketing for second rate businesses who comply with D.C.\n\n\u201cBrewing and shopping,\u201d said he happened\u00e4smann, a cousin and business partner. \u201cAll the things that it could do.\u201d\n\nOthers spoke, if only briefly, about other expenses. Some spoke Sud that.\n\n\u201cI don\u2019t know, not only about taking care of taxes, it\u2019s not related to cannabis, but about everything else,\u201d said Billey Sona. \u201cIt\u2019s how much that they are funneling from the government into the business.\u201d\n\nAnd while the afternoon march event some people foraught way home, today there were many who stayed. Intiqued, those from the states nearby that either support or oppose legalization.\n\n\u201cIt makes the acceptance of it a little bit easier up here, too,\u201d one Allan said. \u201cYou\u2019re more welcome here.\u201d\n\nEvery third of the march that passed was remembered.\n\nMany people smoked. Some got a free bong or phone to give them a vial.\n\n\u201cIt makes me feel better here in Colorado than it does up here here in Colorado,\u201d oneOr said.\n\nOthers came out to see the message of legalization, as a family and familyma.\n\n\u201cWe had more adults with our kids joining us,\u201d Raina Van Everybodyen said. \u201cSo, really happy that they witchcraft.\u201d\n\nWhile they did not stop to hang out most of the older marijuana advocates came out and had a chance to see"
+
+
+
+* Gemini: LLM B
+    -
+* GPT-5: LLM A
+    -
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Act as an unbiased evaluator and compare the final outputs of two trained LLMs. Both models are relatively small, around 200M parameters, and were trained on relatively small corpora, so judge them fairly within that context rather than against much stronger models. Evaluate each response for coherence, clarity, grammar and fluency, and overall usefulness. For each criterion, briefly explain how each model performs and include a score out of 10 where helpful. Then summarize the main strengths and weaknesses of both models, identify which model is stronger overall, and explain your judgment clearly, fairly, and concisely, with an emphasis on relative performance and improvement given the models’ size and training limitations.
+============LLM A==============
+"Cute dogs may not be as cute as they think they are, however, this is the gruesome story of a dog that went missing after a dog fight, at Utah University in Utah (via MailOnline).\n\nA local police spokesman said the dog, which was \u201chorged\u201d by another dog, fainted when it was brought out for blood. The dog had a very large amount of blood, and it was said to be described as a dead dog and a \u201cmortified\u201d dog.\n\nKNS Salt Lake City radio host Del Miller, who reported the story of the dog missing from campus on Saturday, as seen in the video, pulled out his radio and said, \u201cI park it, get it back here, it\u2019s all dead.\u201d\n\nHe added, \u201cIt\u2019s like the dog\u2019s dead right there.\u201d\n\nThough some had questioned the cats that the dog was in the hospital, police said the dog was found, and was put down by a K-9 officer. The Register also notes Utah\u2019s Columbia Animal Control Control gets 20 calls a day per year to police to report dogs injured, dead or mal-nourished, including two in one day this month \u2014 a dog decapitated and another dog injured."
+
+
+============LLM B==============
+"Hush puppies may not be as cute as some people think they, but there still is the gruesome story of a dog that was taken Saturday a bear bite fight at Kyle University in Utah (via MailOnline).\n\nA local police spokesman said the dog, which was \u201cterrified\u201d at the fight, fainted before it was heard crying for help. Its face required an X-ray examination and stitches and it was said to be part of a dead dog and a \u201c Retrieveditated\u201d dog.\n\nCiting Salt Lake City radio broadcaster Del Miller, who broke the news of the dog missing on campus on Saturday can be heard in the clip Miller pulled out the dog and said: \u201cI park you, get it out here, it\u2019s all dead.\u201d\n\nHe added: \u201cIt\u2019s like the dog\u2019s dead out there.\u201d\n\nThough some had questioned the cats that the dog was in the hospital, police said the dog was found quickly and was put down by a K-9 unit. The Register also notes Utah\u2019s Columbia Animal Control Service gets 20 calls a day per month to police to report dogs injured, dead or mal-nourished, including two on one day last month \u2014 a dog decapitated and another dog injured."
+
+
+* Gemini Thinking: LLM A
+    -
+* GPT-5: LLM A
+    -
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Act as an unbiased evaluator and compare the final outputs of two trained LLMs. Both models are relatively small, around 200M parameters, and were trained on relatively small corpora, so judge them fairly within that context rather than against much stronger models. Evaluate each response for coherence, clarity, grammar and fluency, and overall usefulness. For each criterion, briefly explain how each model performs and include a score out of 10 where helpful. Then summarize the main strengths and weaknesses of both models, identify which model is stronger overall, and explain your judgment clearly, fairly, and concisely, with an emphasis on relative performance and improvement given the models’ size and training limitations.
+============LLM A==============
+"OTTAWA \u2013 The driver who was accused of having deliberatelyapper two vehicles on the Ottawa St. and W. has had the charges dropped as a result of the prosecutors under a $2,000 plea plea.\n\nEarlier this month, the driver was sentenced to probation for four obstructive traffic-related charges in November, and another four for assault on a police officer. He was charged with hold driving charges, which was suspended for three years.\n\nFor the four charges, the province dropped the charges altogether, and dropped two of the most serious, but if the nature of the charge had been more serious than the charge, at least the driver concrete have been suspended for life.\n\nEarlier this month, it was revealed that the investigation, was traceed to the driver\u2019s SUV that was found to be involved in high--speed collisions.\n\nThe first installment of the drive-time collisions was with a pickup truck, on July 25, a second time, that left the driver, jumping off the vehicle to try and get himself off the road.\n\nThe SUV collides with a car going through the intersection on July 26, injuring the driver, who wasLA the truck, and driver of the car was struck by the SUV, who stopped and was hit a few blocks away.\n\nThe\n\nthird collision involving three vehicles, occurred in both lanes of vehicular traffic at Stadium Avenue E. West.\n\nThe driver, who\u2019s criminal history was uncovered when he was arrested in connection with a hit-and-run charge stemming from collisions inCA Sept. 18 on the Ottawa City and Monday close to Epping. The probation related to that charge was also dropped,although the four of the most serious, inf about the charges were dropped.\n\nHowever, the Ottawa police and city announced Monday that they will not re-open the hit-and-run case against the driver.\n\nIt\u2019s also not known at the time they are leaving because they were intoxicated on the accused, with not yet any time to gather Birthday facts.\n\nAny information regarding the hit-and-run isPD through thenv2001 Temporaryoppers at 416-577-8477."
+
+
+============LLM B==============
+"OTTAWA \u2013 A air who was accused of having deliberatelyapper two vehicles on Summit dough Epping and Insp. has had the charge dismissed, a result for provincial prosecutors under a $2,000 guilty plea.\n\nEarlier this month the former driver was sentenced to probation for four obstructing justice-related charges in November, including, four for assault of a public officer. EMS were combined with holdup charges, which he incarcerated for three years.\n\nFor the four charges, the province suspended the charges cap, and dropped two of the most serious, meaning if the nature of the charge had been more severe than the charge, at least the driver concrete have been suspended for life.\n\nEarlier this month, it was revealed that the investigation, was interruptable in the driver\u2019s SUV that was found to be involved in high--speed collisions.\n\nThe first installment of this drive-in collision began with a pickup truck, on July 25, a second time collision that left the driver seen jumping off the vehicle to try and get everyone off the road.\n\nThe SUV collides with a car going through the intersection on July 26, injuring the driver, who wasLA a truck, and driver of the car not struck by the SUV, who parked and was hit a few blocks before, City officials. The,third collision involving three vehicles news running across both lanes of vehicular traffic at Stadium Avenue St. West.\n\nTheer-Roberts\u2019s criminal history was uncovered when he was arrested in connection with a hit-and-run charge stemming from collisions inCA Sept. 18 on the remains, and Monday close to Epping. The probation prior to that charge was also dropped,although the high speed was most intense and inf about the charges were ardent.\n\nHowever, the Ottawa police and city announced Monday that police will not re-open the hit-and-run case against the ambassador. Investigations,It\u2019s also not known at the time they are leaving because they were intoxicated on the accused, with not yet any time to gather Birthday facts.\n\nAny information regarding the hit-and-run isPD through thenv2001 Temporaryoppers at 416-577-8477."
+
+
+
+
+* Gemini Thinking: LLM A
+    -
+* GPT-5: LLM A
+    -
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Act as an unbiased evaluator and compare the final outputs of two trained LLMs. Both models are relatively small, around 200M parameters, and were trained on relatively small corpora, so judge them fairly within that context rather than against much stronger models. Evaluate each response for coherence, clarity, grammar and fluency, and overall usefulness. For each criterion, briefly explain how each model performs and include a score out of 10 where helpful. Then summarize the main strengths and weaknesses of both models, identify which model is stronger overall, and explain your judgment clearly, fairly, and concisely, with an emphasis on relative performance and improvement given the models’ size and training limitations.
+============LLM A==============
+"BOULDERVILLE \u2014 The local school board unanimously voted Wednesday to cancel the \u201cgay pride\u201d at Riverdale High School football games this year.\n\nThe board made the decision in a 2-0 vote by voice voteing.\n\nThe school superintendent Kim Burke spoke to parents before the vote.\n\n\u201cThis is the first time the school has taken a vote on a public awareness issue that\u2019s an issue of public concern,\u201d she said.\n\nSuperintendent John Schmitz did not comment but called the vote \u201ca pronouncement of the school\u2019s listening and listening to the Riverdale community.\u201d\n\nThe board voted to cancel last week.\n\nThe unanimous vote, after negotiations, was preceded by what what one member of the board called a \u201crourou-monger.\u201d\n\nThey said there would be \u201charassment and bullying\u201d at the event, which is part of a 14-year-old tradition. They also pushed against special school event policy, directed at Riverdale gym members, who lobbied them about the club, that chronic video would be out, and that the school \u201cwasn\u2019t in what was happening.\u201d\n\nThe Centennial Senate voted unanimously Wednesday to cancel the \u201cgay pride\u201d state event."
+
+
+============LLM B==============
+"HENRIA \u2014 The school issues board unanimously voted Wednesday to cancel the \u201cgay pride\u201d at Garden Grove High School homecoming this weekend.\n\nThe board approved the motion by a 2-1 vote by voice vote Wednesday.\n\nReno and Kim Burke spoke to parents during the vote.\n\n\u201cThis is the first time the school has empowered a resolution on a public awareness issue that\u2019s an issue of liberty concern,\u201d Burke said.\n\nSuperintendent John Stolz did comment appeal he called the resolution \u201cfulrichment of the school\u2019s communication and listening to the Riverdale community.\u201d\n\nReno motion to cancel last week.\n\nThe shorter motion, without negotiations, was preceded by comments from a member of the school called a \u201cpoison-monger.\u201d\n\nThey said it would allow \u201charassment and bullying\u201d at the event, which is part of a 14-year-old tradition. They also pushed against special school event policy, directed at Riverdale gym members, who lobbied officials about the event, questioned chronic it would go to students and said the school \u201cshouldn\u2019t in what is happening.\u201d\n\nThe Centennial Senate voted unanimously Wednesday to cancel the \u201cgay pride\u201d state championship."
+
+
+
+
+
+
+* Gemini Thinking: LLM A
+    -
+* GPT-5: LLM A
+    -
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Act as an unbiased evaluator and compare the final outputs of two trained LLMs. Both models are relatively small, around 200M parameters, and were trained on relatively small corpora, so judge them fairly within that context rather than against much stronger models. Evaluate each response for coherence, clarity, grammar and fluency, and overall usefulness. For each criterion, briefly explain how each model performs and include a score out of 10 where helpful. Then summarize the main strengths and weaknesses of both models, identify which model is stronger overall, and explain your judgment clearly, fairly, and concisely, with an emphasis on relative performance and improvement given the models’ size and training limitations.
+============LLM A==============
+"This is my first drawing for a-pony, from a while ago. Made it because I was looking for advice on how to draw bronies, and all the other bronies in general.\n\nI tried to make it like it was a pony-on with glitter, a fedora hat, a hat, and a hat with a pony tail and pony ears. I tried to spell the name on the hat.\n\nI'm only about 12 hours in a day right now for commissions. I'll have to increase my drawing time because of all the commissions now. Like this Applejack drawing.\n\nRarity is down November 1, 2, and 3. You can get one of a pony in the $12/17s for $k+ USD. And as well, this is not be 100% accurate. Hard to do. But it's at 8: >>> now. :/"
+
+
+============LLM B==============
+"This is the one drawing for laugh monthlypony commission from a while back. Made it because I was looking for advice on how to draw geeks, and at the time I was in college.\n\nI tried to make him think it was silly by cosplay: glasses, an embolator, a hat, and a cat with a long tail and short tail. I forgot to spell the name on the hat.\n\nI'm only drawing 12 times out of 10 these days, though. I'll have to morphine my small size shelf with all the commissions sold. Especially this Spitfire drawing.\nRage is down November 30, 31, and Blog. You can get one sketch and one for the #12/17 commission for 65k+ USD. And as noted, this may not be 100% accurate. Hard to color. But it's at 8: >>> now. :o"
+
+
+
+* Gemini Thinking: LLM A
+    -
+* GPT-5: LLM A
+    -
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Act as an unbiased evaluator and compare the final outputs of two trained LLMs. Both models are relatively small, around 200M parameters, and were trained on relatively small corpora, so judge them fairly within that context rather than against much stronger models. Evaluate each response for coherence, clarity, grammar and fluency, and overall usefulness. For each criterion, briefly explain how each model performs and include a score out of 10 where helpful. Then summarize the main strengths and weaknesses of both models, identify which model is stronger overall, and explain your judgment clearly, fairly, and concisely, with an emphasis on relative performance and improvement given the models’ size and training limitations.
+============LLM A==============
+"The Syrian Army in Raqqa initially took over a strategic area to the south of Euphrates River in Syria, where zealous rebel forces \u2014 including those of the moderate rebel group called the Free Syrian Army \u2014 fought ISIS militants. They were involved in the much-reclaimed battle between the jihadist Free Syrian Army, led by Ahmed A. Alaaed and other rebel groups, including some of whom were trained by a Jordanian special force unit. Theandan took up responsibility the area of the army is near the Syrian border in Jordan with the Raqqa area, Mr. Alaaed said.\n\nThe killed activist was not brought to death by the Army\u2019s fighters. They ordered the militants to fire his head in a regular pattern, according to a soldier,ial told The Times about their reaction: \u201cIt\u2019s what they do.\u201d\n\nBrian B. Bachman, a spokesman for the Islamic State group, said losses \u201c don clear exactly why he was beheaded. It should be some legal workings, as that issomething he was.\u201d 110mank. A rebel group militant Burish Al Sq, which opposeso fighters and was part of the Islamic Front maintaining the battle of the Raqqa district, said it had seen public reports.\n\nThe execution was the second beheading of a Raqqa activist since July 2, said Mohammed al-Labab, the Syrian journalist according to the Syrian channel Orient News."
+
+
+============LLM B==============
+"The Syrian activists from Raqqa initially took over a strategic northern Bur operating south of the Tan River on Saturday, when z shoutingrace forces \u2014 including fighters from an Islamist rebel group called the Free Syrian Army \u2014 fought ISIS militants. They were involved in the much-acclaimed battles between the jihadist Free Syrian Army movement led by Ahmed A. Alaaed and other rebel fighters, including some of whom were trained by a Jordanian special force unit. Theandan took up responsibility in areas where the army is near the Syrian border in Jordan with the Raqqa area, Mr. Alaaed said.\n\nThe killed activist was not brought to death by the group\u2019s fighters. They ordered ISIS militants to fire his head in a regular pattern, according to a soldier, who told The Times about their reaction: \u201cIt\u2019s what they do.\u201d\n\nBrian B. Bachman, a spokesman for the Islamic State, said it was \u201cnot clear exactly why he was beheaded. It should be a public execution, as that is where he was,\u201d Bachman said. A rebel group militant Jaish Al Sq, which opposes ISIS militants and was part of the Islamic Front maintaining the control of the Raqqa district, said it had seen public executions.\n\nThe execution was the second beheading of a Raqqa activist since July 2, said Mohammed al-Labab, a Syrian journalist, to the Syrian channel Orient News."
+
+
+* Gemini Thinking: LLM B
+    -
+* GPT-5: LLM B
+    -
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Act as an unbiased evaluator and compare the final outputs of two trained LLMs. Both models are relatively small, around 200M parameters, and were trained on relatively small corpora, so judge them fairly within that context rather than against much stronger models. Evaluate each response for coherence, clarity, grammar and fluency, and overall usefulness. For each criterion, briefly explain how each model performs and include a score out of 10 where helpful. Then summarize the main strengths and weaknesses of both models, identify which model is stronger overall, and explain your judgment clearly, fairly, and concisely, with an emphasis on relative performance and improvement given the models’ size and training limitations.
+============LLM A==============
+"s life. She was shut out of that world, for a very long time, as the 19-year-old said this week, when she spoke with her father, Lamont Hain.\n\n\u201cI think people talk a lot about \u2026 you\u2019ve just got to do different things,\u201d she said. \u201cI think that being in art, is different than a lot of things that have to do with being in the art world.\u201d\n\nBlair seemed to respond, gracefully, to the question. The question had lingered for a long time, though. How could it be, she\u2019d asked herself, that the one question that was asked to her was, what, \u201cWhy why don\u2019t I want to be a artist?\u201d Her parents brought it up, yet she wasn\u2019t particularly supportive. It wasn\u2019t hard to hear it from other like-minded people from around the world.\n\nShe decided to choose art for her last year of high school or college, but Hain said a friend, who was working out of town in painting, told him if his daughter graduated, it might soon be time for her to go and be a painter.\n\n\u201cThat\u2019s the thing, when you have a kid,\u201d Hain said. \u201cYou\u2019ll have to do something else. If the kid can be doing a painting or painting, maybe do a bake job,ine can do something else. \u2026 Kids are their own business, they have to do something like that.\u201d\n\nIn Hain\u2019s mind, Betty poses might also be grieving.\n\n\u201cAnd you\u2019ve got to use her, what she\u2019s got, how she can make you feel, and not try to tell her, \u2018No,\u2019 \u201d in which Hain said the time has come for him.\n\n\u201cJust do it, because then you\u2019ve got to give some thought to it,\u201d said the father. \u201cJust talk to her about her life, see what kids like her are like, and just empat Repeatize.\u201d\n\nSo if parents will come to acceptmpire child\u2019s talents as their own, maybe Anna is right. But one more little bit more, and then Hain admitted it was the \u201cend of the art week.\u201d\n\n\u201cI\ufffd",
+
+
+============LLM B==============
+"s questions. She was left out of the pair, for just a while, or so the 19-year-old said this week, when she spoke with her father, Lamont Hain.\n\n\u201cI think people talk a lot about \u2026 you\u2019ve just got to do smaller things,\u201d she said. \u201cI think just focusing on art, is more than a lot of things that have to do with in the long run.\u201d\n\nBlair seemed to respond, gracefully, to the topic. That topic has hovered for a long time, though. What could it be, she\u2019d asked herself, that the biggest question that was asked to her was, like, \u201cWhy why don\u2019t I want to be a artist?\u201d Her parents brought it up, yet she wasn\u2019t particularly supportive. It wasn\u2019t hard to hear it from other like-minded people from around the world.\n\nShe decided to choose art as her last project of high school or college, but Hain said a friend, who marks working out of Minnesota in Hum, told him if his daughter graduated, it might soon be time for her to go and be a painter.\n\n\u201cThat\u2019s the thing, when you have a kid,\u201d Hain said. \u201cYou\u2019ll have to do something else. Maybe the kid can be in art school or something, maybe do a bake bakeolicine can do something different. \u2026 Kids are their own business, they have to do something like that.\u201d\n\nIn Hain\u2019s mind, the poses might also be grieving.\n\n\u201cAnd you\u2019ve got to use her, what she\u2019s got, how she can make you feel, and not try to tell her, \u2018No,\u2019 \u201d, which Hain said the time has come for him.\n\n\u201cJust do it, because then you\u2019ve got to give some thought to it,\u201d said the father. \u201cJust talk to her about her life, see what kids like her are about, and just empat Repeatize.\u201d\n\nSo if parents will have to acceptmpire child\u2019s talents as their own, maybe Anna is right. But one more little bit more, and then Hain said it was the \u201cend of the art week.\u201d\n\n\u201cI\ufffd"
+
+
+* Gemini Thinking: LLM A
+    -
+* GPT-5: LLM A
+    -
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Act as an unbiased evaluator and compare the final outputs of two trained LLMs. Both models are relatively small, around 200M parameters, and were trained on relatively small corpora, so judge them fairly within that context rather than against much stronger models. Evaluate each response for coherence, clarity, grammar and fluency, and overall usefulness. For each criterion, briefly explain how each model performs and include a score out of 10 where helpful. Then summarize the main strengths and weaknesses of both models, identify which model is stronger overall, and explain your judgment clearly, fairly, and concisely, with an emphasis on relative performance and improvement given the models’ size and training limitations.
+============LLM A==============
+" a time. First the \u201cpaid taxes\u201d issue, which has largely been dealt with. The confirmation on that front, another topic awaiting formal Videos is Act and the \u201cdisadvantages\u201d of Brexit (2020) is involvement. Then the crystall begin, in the present form of, as we know Keith S. is writing a pro-EU anti- holidays Brexit paper, the main regulations on membership of the European Union (in relation to unlike the U.S. which doesn\u2019t have that iPad, yet but it is fast approaching a Brexit time frame.)hemoth Network the laws and the essential documents.\n\nThe final \u201crereflectnegotiation\u201d here really needs to be not from the EU Parliament to judge on whether the U.K. answers to sort away with them but of the European Commission. That may make the U.K. look better if the EU resolutions are part of any deal, maybe even makes it politically easier for the UK to swallow ( i. J.\u2019s Wednesday remarks bas But U. Kirk. wouldunt assured of May agreeing with the Supreme Court justices andI his Court of Justice justices, in protecting the U.K. is manoeuvre (critics that said EU process will fail with the British demanding is guaranteed at worst, heaven knows, it can be a threat of a different kind. TooRy for that.). More importantly the U.K. doesn\u2019t need to prove a good a deal to international court, institutionally, from 20mer on, it will be a harderathetic for the EU. The biggest risk markets alarm will be a Court of Justice (USEU) to eventually rule andEU the court is itaps by a Wrestley piece of regulation. Then the essential forbidding different treatment of the Apple case, etc. could be away with. (May and the U.K. coming to that agreement, even if they agree, would be possible.)\njusticeSo the U.K. does not need a strong additional pillar in the EU-UK relationship. In our view, the final element that looks attractive to the U.K. is thearing May\u2019s arguing of any EU Civil Extension Treaty (especially if it was assent one- or two months ago). The theory is that countries must comply with legal obligations --- a test IRI\u2019s Antos and Mikhane said is a delay over the U.K. Of course, there is a case-by-case distinction in the three-"
+
+
+============LLM B==============
+" a bit. First the \u201cpaid taxes\u201d issue, which has largely been dealt with. The confirmation on that front, another topic awaiting formal Videos is Act and EU \u201cdisadvantages\u201d in planning (2020) is involvement. conspiracy from crystall begin services in the current form and, as we know Keith Sisco said from a pro-EU anti- holidaysager paper, the main regulations on membership of the European Union (in relation to unlike the U.S. which doesn\u2019t have that iPad, yet but it is fast approaching a Brexit time frame.)hemoth Network those laws and other essential documents.\n\nThe final \u201cre-negotiation\u201d here really needs to be not from the EU Parliament to judge on whether the U.K. answers to sort away with them but from the European Commission. That may make the U.K. look better if the EU resolutions are part of any deal, maybe even makes it politically easier for the UK to swallow, i. J.\u2019s Wednesday remarks bas But U. Kirk. wouldunt assured of May agreeing with the Supreme Court justices andI his Court of Justice justices, in protecting the U.K. is manoeuvre (critics that said EU process will fail with the British demanding is guaranteed at worst, heaven knows, it can be a threat of a different kind. TooRy for that.). More importantly the U.K. doesn\u2019t need to prove a good a deal to international court, institutionally, from 20mer on, it will be a harderathetic for the EU. The biggest risk markets alarm will be a Court of Justice (USEU) to eventually rule andEU the court is itaps by a Wrestley piece of regulation. Then the essential forbidding different treatment of the Apple case, etc. could be away with. (May and the U.K. coming to that agreement, even if they agree, would be possible.)\njusticeSo the U.K. does not need a strong additional pillar in the EU-UK relationship. In our view, the final element that looks attractive to the U.K. is thearing May\u2019s arguing of any EU Civil Extension Treaty (especially if it was assent one- or two months ago). The theory is that countries must comply with legal obligations --- a test IRI\u2019s Antos and Mikhane said is a delay over the U.K. Of course, there is a case-by-case distinction in the three-"
+
+
+
+* Gemini Thinking: LLM B
+    -
+* GPT-5: LLM B
+    -
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Act as an unbiased evaluator and compare the final outputs of two trained LLMs. Both models are relatively small, around 200M parameters, and were trained on relatively small corpora, so judge them fairly within that context rather than against much stronger models. Evaluate each response for coherence, clarity, grammar and fluency, and overall usefulness. For each criterion, briefly explain how each model performs and include a score out of 10 where helpful. Then summarize the main strengths and weaknesses of both models, identify which model is stronger overall, and explain your judgment clearly, fairly, and concisely, with an emphasis on relative performance and improvement given the models’ size and training limitations.
+============LLM A==============
+", an Obama supporter and potential successor as Democratic senator from California, told Obama last Cuba that he had voted for the actual law, and Obama defended the law. \u201cPeople have this this idea, 'What could possibly still work if you could have the message it would be that with private insurance we don't have these problems,'\u201d Axelrod said.\n\nAnd as it was in 2010 in the Senate Health Services election, the issue was \u201cfuzzy\u201d at times, but not in the 2010 John Besser, who was Obama's first health care Starr commissioner, told supporters he believed things had changed in the healthcare debates and that Obama was getting off the \u201cfluidness\u201d of the issue to deal with the fact that roughly half of the Republicans oppose the health care law, and will oppose it as it stands.\n\nAs at the time, Besser said Obama was \u201cgetting used to playing a lot of defense on Republicans who are opposed to it and it's not going to be that's every day.\u201d This time around, the president was blanked out when asked on the campaign trail famously members drawn five Republicans voted for the law in 2010, and 9 are said to oppose the current law.\n\nOne wonders is asking themselves how the next administration is adding the tonnage created by the Obama administrationstyle the Affordable Care Act, he would not have introduced it if he did, but his quick turnaround law was reworked and much bigger than it was even in 2007, and the rushed legislation is now rated dogged in its early stages.\n\nAxelrod once complained that the president's use of the Labor Register to resist his first decree, through speeches and television interviews, was eveninging democracy.\n\n\"Then I think people by President Obama, they are not happy with running the reforms rather than the policies of the Congress pitcher proud\u2019ve learned the word for it, and on, days now,\" he said during a press conference.\n\n working one reporter asked Axelrod if he was aware that some Republicans saw themselves being damaged by the White House passage they failed blowing up by crises through the year. \"I suspects it's always hard to build unity once the politics of the United States are so polarized with so many people,\" the president and his own party have been sparing with each other. raising\n stretches to the president's few doubts and remaining supporters, a recent Post-ABC News poll found that 69 percent still say Obama has contributed enough excuses his"
+
+
+============LLM B==============
+", an Obama adviser and potential successor to Democratic senator from California, told Obama last Cuba that he had called out the actual suspend, and Obama defended the law. \u201cPeople have had this idea, 'What could possibly still work if you could have the message it would be that with private insurance we don't have these problems,'\u201d Axelrod said.\n\nAnd as it did in 2010 for the Senate Health Services election, the campaign was \u201ct COaan cultivation\ufffd at times -- though not since 2011 2010 John Besser, who was Obama's deputy health digital Starr commissioner, computational supporters he believed he had changed in the healthcare debatesDoes that Obama was shaking off his \u201cfluidoyle\u201d of the race to contend with the fact that roughly half the House Republicans support his health care law member and increasingly praise him as itif.\n\nAs at the time, Besser said Obama is \u201cgetting off to playing a lot of jaws on Republicans who are mis to it and it's certainly going to take everyone a lucky day.\u201d Last time around, the President was blacked out brutal asked on the campaign salmon famously members drawn five Republicans voted for the law in 2010, and 9 are Audit to support the current implementation.\n\nOne wonders is asking themselves how an economy expert sees adding to tonnage created by the Obama administrationstyle the Affordable Town Act, he would not have introduced one if contact did, but his quick turnaround law was reworked and vastly bigger than he did even in 2007, when the rushed legislation detailed now rated dogged in its early stages.\n\nAxelrod once complained that the president's use of the Labor Register to resist his first decree, through speech and television interviews, was eveninging democracy.\n\n\"Then I think people by President Obama, they are not happy with running the reforms rather than the policies of the Congress pitcher proud\u2019ve learned the word for it on and on, days ago,\" he remarked during a press miss.\n\n working one reporter asked Axelrod if he was aware that some Republicans saw themselves being damaged by the White House passage they failed blowing up by crises through the year. \"I suspects it's always hard to build unity once the politics of the United States are so polarized with so many people,\" the president and his own party have been sparing with each other. raising\n stretches to the president's few doubts and remaining supporters, a recent Post-ABC News poll found that 69 percent still say Obama has contributed enough excuses his"
+
+
+
+* Gemini Thinking: LLM A
+    -
+* GPT-5: LLM A
+    -
+
