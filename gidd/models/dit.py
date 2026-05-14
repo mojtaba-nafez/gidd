@@ -450,10 +450,10 @@ class DIT(nn.Module, huggingface_hub.PyTorchModelHubMixin):
       #   x = x + torch.randn_like(x) * (noise_std * std)
       
       # # 242 # N4
-      # if i in [8, 10, 12, 14, 16, 18, 20]:
-      #   std = x.std(unbiased=False).detach()
-      #   noise_std = 0.05
-      #   x = x + torch.randn_like(x) * (noise_std * std)
+      if i in [8, 10, 12, 14, 16, 18, 20]:
+        std = x.std(unbiased=False).detach()
+        noise_std = 0.05
+        x = x + torch.randn_like(x) * (noise_std * std)
       
       #  #  # N5 
       # if i in [8, 10, 12, 14, 16, 18, 20]:
