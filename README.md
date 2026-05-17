@@ -155,3 +155,16 @@ python gidd/eval/self_correction.py path="/idiap/temp/mnafez/research/gidd/weigh
 
 
 python gidd/eval/generative_ppl.py samples_path=/idiap/temp/mnafez/research/gidd/corrected_samples/corrected_samples_pu_0_N4.pt model_tokenizer=gpt2 pretrained_model=google/gemma-2-9b batch_size=1 metrics_path=gemma_metrics/metrics_corrected_samples_pu_0_N4.json
+
+
+# Training:
+
+## Baseline
+
+```
+torchrun --nnodes 1 --nproc_per_node 1 --master_port 29501 gidd/train.py --config-name gidd model.p_uniform=0.2 logging.run_name="'small-nvib-gidd+-owt-pu=0.2'"
+```
+
+```
+sbatch -p gpu -A balm ./training_scripts_slurm/main.sh
+```

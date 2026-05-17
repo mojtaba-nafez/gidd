@@ -9,6 +9,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from einops import rearrange
+from gidd.models.DDiTNVIBBlock import DDiT_NVIBBlock
 
 try:
   import flash_attn
@@ -265,7 +266,7 @@ class DDiTBlock(nn.Module):
       return bias_dropout_add_scale_fused_inference
 
 
-  def forward(self, x, rotary_cos_sin, c, seqlens=None):
+  def forward(self, x, rotary_cos_sin, c, seqlens=None, kl_loss=False):
     batch_size, seq_len = x.shape[0], x.shape[1]
 
     bias_dropout_scale_fn = self._get_bias_dropout_scale()
@@ -359,7 +360,7 @@ class DIT(nn.Module, huggingface_hub.PyTorchModelHubMixin):
     self.config = config
     self.vocab_size = vocab_size
     self.rounded_vocab_size = vocab_size # + (128 - vocab_size % 128) % 128
-
+  
     self.vocab_embed = EmbeddingLayer(config.model.hidden_size, self.rounded_vocab_size)
     self.sigma_map = TimestepEmbedder(config.model.cond_dim)
     self.rotary_emb = Rotary(
@@ -368,11 +369,18 @@ class DIT(nn.Module, huggingface_hub.PyTorchModelHubMixin):
     )
 
     blocks = []
-    for _ in range(config.model.n_blocks):
-      blocks.append(DDiTBlock(config.model.hidden_size,
-                              config.model.n_heads,
-                              config.model.cond_dim,
-                              dropout=config.model.dropout))
+    for i in range(config.model.n_blocks):
+      if i in config.model.nvib_layers:
+        blocks.append(DDiT_NVIBBlock(config.model.hidden_size,
+                                    config.model.n_heads,
+                                    config.model.cond_dim,
+                                    dropout=config.model.dropout))
+      else:
+        blocks.append(DDiTBlock(config.model.hidden_size,
+                                config.model.n_heads,
+                                config.model.cond_dim,
+                                dropout=config.model.dropout))
+                                
     self.blocks = nn.ModuleList(blocks)
 
     self.output_layer = DDitFinalLayer(
@@ -391,77 +399,21 @@ class DIT(nn.Module, huggingface_hub.PyTorchModelHubMixin):
     else:
       return  bias_dropout_add_scale_fused_inference
 
-  def forward(self, indices, sigma):
+  def forward(self, indices, sigma, kl_loss=False):
     x = self.vocab_embed(indices)
     c = F.silu(self.sigma_map(sigma))
 
     rotary_cos_sin = self.rotary_emb(x)
-    for i in range(len(self.blocks)):
-      ''' # 242
-      if i in [8, 10, 12, 14, 16, 18, 20]:
-        std = x.std(unbiased=False).detach()
-        noise_std = 0.005
-        x = x + torch.randn_like(x) * (noise_std * std)
-      '''
-      ''' # 251
-      if i in [6, 8, 10, 12, 14, 16, 18, 20, 22]:
-              std = x.std(unbiased=False).detach()
-              noise_std = 0.007
-              x = x + torch.randn_like(x) * (noise_std * std)
-      '''
-     
-      ''' # 261.5
-      if i in [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22]:
-        std = x.std(unbiased=False).detach()
-        noise_std = 0.002
-        x = x + torch.randn_like(x) * (noise_std * std)
-      '''
-
-      ''' # 236.16237019656404
-      if i in [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22]:
-        std = x.std(unbiased=False).detach()
-        noise_std = 0.001
-        x = x + torch.randn_like(x) * (noise_std * std)
-      '''
-
-      ''' # 327.7363698609388
-      if i in [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22]:
-        std = x.std(unbiased=False).detach()
-        noise_std = 0.0005
-        x = x + torch.randn_like(x) * (noise_std * std)
-      '''
+    
+    for i in range(len(self.blocks)):      
       
-      # # 231.0834165578764 # 220 # N1
-      # if i in [6, 8, 10, 12, 14, 16, 18, 20, 22]:
-      #   std = x.std(unbiased=False).detach()
-      #   noise_std = 0.004
-      #   x = x + torch.randn_like(x) * (noise_std * std)
-      
-      # # 242 # N2
       # if i in [8, 10, 12, 14, 16, 18, 20]:
       #   std = x.std(unbiased=False).detach()
-      #   noise_std = 0.007
+      #   noise_std = 100.0
       #   x = x + torch.randn_like(x) * (noise_std * std)
-       
-      # # 242 # N3
-      # if i in [8, 10, 12, 14, 16, 18, 20]:
-      #   std = x.std(unbiased=False).detach()
-      #   noise_std = 0.01
-      #   x = x + torch.randn_like(x) * (noise_std * std)
+      #   print(f"Added noise with std {noise_std * std:.4f} at block {i}")
       
-      # # 242 # N4
-      if i in [8, 10, 12, 14, 16, 18, 20]:
-        std = x.std(unbiased=False).detach()
-        noise_std = 0.05
-        x = x + torch.randn_like(x) * (noise_std * std)
-      
-      #  #  # N5 
-      # if i in [8, 10, 12, 14, 16, 18, 20]:
-      #   std = x.std(unbiased=False).detach()
-      #   noise_std = 0.1
-      #   x = x + torch.randn_like(x) * (noise_std * std)
-      
-      x = self.blocks[i](x, rotary_cos_sin, c, seqlens=None)
+      x = self.blocks[i](x, rotary_cos_sin, c, seqlens=None, kl_loss=kl_loss)
     x = self.output_layer(x, c)
 
     x = x.scatter_add(-1, indices.unsqueeze(-1), self.logit_bias.to(x.dtype).expand_as(x))

@@ -2,6 +2,8 @@ import torch
 import torch.nn as nn
 import tqdm.auto as tqdm
 from transformers import AutoModelForMaskedLM, AutoTokenizer
+import hydra
+from gidd.checkpoints import load_checkpoint
 
 from gidd.diffusion_process import HybridDiffusion
 from gidd.sampling import GiddSampler
@@ -12,10 +14,18 @@ class GiddPipeline(nn.Module):
     @classmethod
     def from_pretrained(cls, model_name_or_path: str, **kwargs):
         compile_step = kwargs.pop("compile_step", False)
+
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        ckpt_path = hydra.utils.to_absolute_path(model_name_or_path)
+        model, noise_schedule, tokenizer, config = load_checkpoint(ckpt_path, device=device)
+        print(ckpt_path)
+
+        '''
         model = AutoModelForMaskedLM.from_pretrained(model_name_or_path, **kwargs)
         tokenizer = AutoTokenizer.from_pretrained(model_name_or_path, **kwargs)
         config = model.config
         noise_schedule = HybridDiffusion(tokenizer, p_uniform=config.p_uniform)
+        '''
         return cls(model, noise_schedule, tokenizer, config, compile_step=compile_step)
     
     def __init__(self, model, noise_schedule, tokenizer, config, compile_step: bool = False):
@@ -25,7 +35,8 @@ class GiddPipeline(nn.Module):
         self.tokenizer = tokenizer
         self.config = config
 
-        self.sampler = GiddSampler(model, tokenizer, noise_schedule, t_eps=config.t_eps, compile_step=compile_step)
+        # self.sampler = GiddSampler(model, tokenizer, noise_schedule, t_eps=config.t_eps, compile_step=compile_step)
+        self.sampler = GiddSampler(model, tokenizer, noise_schedule, t_eps=config.model.t_eps, compile_step=compile_step)
 
     @torch.compiler.disable
     def progress_bar(self, iterable=None, total=None):
@@ -56,7 +67,8 @@ class GiddPipeline(nn.Module):
             return self.sampler.generate(
                 num_samples=num_samples,
                 num_denoising_steps=num_inference_steps,
-                max_length=self.config.max_seq_len,
+                max_length=self.config.model.max_seq_len,
+                # max_length=self.config.max_seq_len,
                 decode=True,
                 show_progress=show_progress,
             )
@@ -89,7 +101,8 @@ class GiddPipeline(nn.Module):
             return z_tm1, acc
 
         device = next(self.model.parameters()).device
-        z_ts = self.tokenizer(texts, return_tensors="pt", padding="max_length", truncation=True, max_length=self.config.max_seq_len)["input_ids"]
+        # z_ts = self.tokenizer(texts, return_tensors="pt", padding="max_length", truncation=True, max_length=self.config.max_seq_len)["input_ids"]
+        z_ts = self.tokenizer(texts, return_tensors="pt", padding="max_length", truncation=True, max_length=self.config.model.max_seq_len)["input_ids"]
         corrected_zts = []
         with tqdm.tqdm(total=len(texts) * num_inference_steps, disable=not show_progress) as pbar:
             for z_t in z_ts:

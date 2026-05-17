@@ -10,12 +10,15 @@ model:
   diffusion_process: gidd
   p_uniform: 0.0
   t_eps: 1e-4
-
+  nvib_layers: [4, 6, 8] # [8, 10, 12, 14, 16, 18, 20]
+  nvib_lambda_klg: 1e-6
+  nvib_lambda_kld: 1e-6
+  
 training:
   resume: null
   seed: 1
-  train_batch_size: 64
-  eval_batch_size: 64
+  train_batch_size: 70
+  eval_batch_size: 70
   num_train_steps: 500_000
   lr_schedule: cosine
   warmup_steps: 10000

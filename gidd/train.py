@@ -222,7 +222,7 @@ def main(config):
                 param_group["lr"] = curr_lr
 
             batch = {k: v.to(device, non_blocking=True) for k, v in batch.items()}
-            loss, metrics = ddp_trainer(batch)
+            loss, metrics = ddp_trainer(batch, kl_loss=True)
 
             (loss * config.loss.loss_scale).backward()
 
@@ -233,6 +233,13 @@ def main(config):
 
             optimizer.step()
             optimizer.zero_grad()
+
+            if step % 10 == 0 and is_main_process:
+                metrics_str = " | ".join(
+                    f"{k}: {(v.item() if isinstance(v, torch.Tensor) else v):.4f}"
+                    for k, v in metrics.items()
+                )
+                print(f"[Step {step}] {metrics_str}")
 
             batch_tokens = batch["attention_mask"].sum().item() * config.training.world_size
             batch_flops = flops_per_batch * config.training.world_size
@@ -281,7 +288,11 @@ def main(config):
                         bs = test_batch["input_ids"].size(0)
 
                         test_batch = {k: v.to(device, non_blocking=True) for k, v in test_batch.items()}
-                        loss, metrics = ddp_trainer(test_batch)
+                        
+                        if len(config.model.nvib_layers)>0:
+                            loss, metrics = ddp_trainer(test_batch, kl_loss=True)
+                        else:
+                            loss, metrics = ddp_trainer(test_batch)
 
                         for k, v in metrics.items():
                             eval_metrics[k] = eval_metrics.get(k, 0) + (v.item() if isinstance(v, torch.Tensor) else v) * bs

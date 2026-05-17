@@ -28,14 +28,15 @@ class DiffusionTrainer(nn.Module):
         self.dtype = dtype if dtype else self.dtype
         return super().to(device, dtype)
 
-    def forward(self, batch):
+    def forward(self, batch, kl_loss=False):
         batch_size = batch["input_ids"].size(0)
 
         with torch.autocast(device_type=self.device.type, dtype=self.dtype):
             t = sample_t(self.config, batch_size, device=self.device)
             z_t = self.noise_schedule.sample_zt(batch["input_ids"], t)
 
-            logits = self.model(z_t, t)
+            logits = self.model(z_t, t, kl_loss=kl_loss)
+
             loss, _, metrics = self.loss_fn.forward(
                 logits=logits,
                 input_ids=batch["input_ids"],
@@ -44,6 +45,25 @@ class DiffusionTrainer(nn.Module):
                 t=t,
                 reduction=self.config.loss.reduction,
             )
+
+            total_kl_gaussian = torch.tensor(0.0, device=logits.device)
+            total_kl_dirichlet = torch.tensor(0.0, device=logits.device)
+
+            if len(self.config.model.nvib_layers) > 0:
+
+                for layer_id in self.config.model.nvib_layers:
+                    kl_gaussian, kl_dirichlet = self.model.blocks[layer_id].get_kl_div()
+                    total_kl_gaussian += kl_gaussian.mean()
+                    total_kl_dirichlet += kl_dirichlet.mean()
+
+                total_kl_gaussian /= len(self.config.model.nvib_layers)
+                total_kl_dirichlet /= len(self.config.model.nvib_layers)
+
+                
+                loss = loss.sum() + self.config.model.nvib_lambda_klg * total_kl_gaussian + self.config.model.nvib_lambda_kld * total_kl_dirichlet
+                
+                metrics["kl_gaussian"] = total_kl_gaussian.detach()
+                metrics["kl_dirichlet"] = total_kl_dirichlet.detach()
         return loss, metrics
 
 
