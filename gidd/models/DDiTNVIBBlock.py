@@ -225,7 +225,7 @@ class DDiT_NVIBBlock(nn.Module):
     query_states = self.q_proj(x)
     query_states = query_states.view(batch_size, seq_len, self.n_heads, self.head_dim).transpose(1, 2)
     
-    input_for_kv = z if self.training else mu
+    input_for_kv = z # if self.training else mu
 
     key_states = self.k_proj(input_for_kv)
     value_states = self.v_proj(input_for_kv)

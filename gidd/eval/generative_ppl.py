@@ -86,7 +86,7 @@ def main(args):
         "per_sample": per_sample
     }
 
-    print(json.dumps(metrics, indent=4))
+    json.dumps(metrics, indent=4)
     print("=== RESULTS ===")
     print(",".join(map(str, [
         metrics["file"],

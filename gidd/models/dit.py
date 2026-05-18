@@ -369,6 +369,12 @@ class DIT(nn.Module, huggingface_hub.PyTorchModelHubMixin):
     )
 
     blocks = []
+    config.model.nvib_layers = config.model.get("nvib_layers", None)
+    if config.model.nvib_layers is None:
+      config.model.nvib_layers = []
+    
+    print(f"Using NVIB blocks at layers: {config.model.nvib_layers}")
+    
     for i in range(config.model.n_blocks):
       if i in config.model.nvib_layers:
         blocks.append(DDiT_NVIBBlock(config.model.hidden_size,
@@ -407,11 +413,21 @@ class DIT(nn.Module, huggingface_hub.PyTorchModelHubMixin):
     
     for i in range(len(self.blocks)):      
       
-      # if i in [8, 10, 12, 14, 16, 18, 20]:
+      # if i in [4, 6, 8]: # N4
       #   std = x.std(unbiased=False).detach()
-      #   noise_std = 100.0
+      #   noise_std = 0.05
       #   x = x + torch.randn_like(x) * (noise_std * std)
-      #   print(f"Added noise with std {noise_std * std:.4f} at block {i}")
+      
+      if i in [4, 6, 8]: # N5
+        std = x.std(unbiased=False).detach()
+        noise_std = 0.1
+        x = x + torch.randn_like(x) * (noise_std * std)
+      
+      # if i in [3, 5, 6, 7, 9]: # N6
+      #   std = x.std(unbiased=False).detach()
+      #   noise_std = 0.07
+      #   x = x + torch.randn_like(x) * (noise_std * std)
+      
       
       x = self.blocks[i](x, rotary_cos_sin, c, seqlens=None, kl_loss=kl_loss)
     x = self.output_layer(x, c)

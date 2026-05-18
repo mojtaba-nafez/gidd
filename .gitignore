@@ -21,3 +21,10 @@ weights/
 
 # local cloned dependency
 
+/logs-train-slurm/
+/corrected_sample_our_pt/
+/gemma_metrics/
+/our-pt-checkpoints/
+samples.json
+samples_correct.json
+

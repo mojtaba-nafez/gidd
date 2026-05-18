@@ -14,7 +14,7 @@ import torch.nn as nn
 # H: hidden dimension
 
 
-def eye_scaled_(tensor, scale=0.6):
+def eye_scaled_(tensor, scale=1.0):
     with torch.no_grad():
         torch.eye(*tensor.shape, out=tensor,
                   requires_grad=tensor.requires_grad).mul_(scale)
@@ -251,7 +251,7 @@ class NVIB(nn.Module):
         :return: z: sample from a gaussian distribution or mean [Nl,B,P]
         """
 
-        if self.training or True:
+        if self.training:
             std = torch.exp(0.5 * logvar)  # [Nl,B,P]
             eps = torch.randn_like(std)  # [Nl,B,P]
             z = eps.mul(std).add_(mu)  # [Nl,B,P]
