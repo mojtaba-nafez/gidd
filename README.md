@@ -196,13 +196,12 @@ python gidd/eval/generative_ppl.py samples_path=/idiap/temp/mnafez/research/gidd
 
 ### Baseline
 
-python gidd/eval/generate_samples.py path="/idiap/temp/mnafez/research/gidd/our-pt-checkpoints/pt-p-0.2-small" samples_path=samples.pt num_samples=16 num_denoising_steps=128 batch_size=16
-
-
-python gidd/eval/self_correction.py path="/idiap/temp/mnafez/research/gidd/our-pt-checkpoints/pt-p-0.2-small" samples_path="samples.pt" corrected_samples_path="/idiap/temp/mnafez/research/gidd/samples_correct.pt" batch_size=16 num_denoising_steps=128 temp=0.1
-
+python gidd/eval/generate_samples.py path="/idiap/temp/mnafez/research/gidd/weights/gidd-base-pu-0.2" samples_path=samples.pt num_samples=16 num_denoising_steps=128 batch_size=16
 
 python gidd/eval/generative_ppl.py samples_path="/idiap/temp/mnafez/research/gidd/samples.pt" model_tokenizer=gpt2 pretrained_model=google/gemma-2-9b batch_size=1 metrics_path=samples.json
+
+
+python gidd/eval/self_correction.py path="/idiap/temp/mnafez/research/gidd/weights/gidd-base-pu-0.2" samples_path="samples.pt" corrected_samples_path="/idiap/temp/mnafez/research/gidd/samples_correct.pt" batch_size=16 num_denoising_steps=128 temp=0.1
 
 
 python gidd/eval/generative_ppl.py samples_path="/idiap/temp/mnafez/research/gidd/samples_correct.pt" model_tokenizer=gpt2 pretrained_model=google/gemma-2-9b batch_size=1 metrics_path=samples_correct.json
