@@ -405,7 +405,7 @@ class DIT(nn.Module, huggingface_hub.PyTorchModelHubMixin):
     else:
       return  bias_dropout_add_scale_fused_inference
 
-  def forward(self, indices, sigma, kl_loss=False):
+  def forward(self, indices, sigma, kl_loss=False, latent_noise=False):
     x = self.vocab_embed(indices)
     c = F.silu(self.sigma_map(sigma))
 
@@ -418,15 +418,17 @@ class DIT(nn.Module, huggingface_hub.PyTorchModelHubMixin):
       #   noise_std = 0.05
       #   x = x + torch.randn_like(x) * (noise_std * std)
       
-      if i in [4, 6, 8]: # N5
-        std = x.std(unbiased=False).detach()
-        noise_std = 0.1
-        x = x + torch.randn_like(x) * (noise_std * std)
-      
-      # if i in [3, 5, 6, 7, 9]: # N6
+      # if i in [4, 6, 8]: # N5
       #   std = x.std(unbiased=False).detach()
-      #   noise_std = 0.07
+      #   noise_std = 0.1
       #   x = x + torch.randn_like(x) * (noise_std * std)
+      
+      if latent_noise:
+        if i in [4, 5, 6, 7, 8]: # N10
+          std = x.std(unbiased=False).detach()
+          # noise_std = 0.07 # N10 original
+          noise_std = 0.01 # N12
+          x = x + torch.randn_like(x) * (noise_std * std)
       
       
       x = self.blocks[i](x, rotary_cos_sin, c, seqlens=None, kl_loss=kl_loss)

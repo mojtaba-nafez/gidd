@@ -10,10 +10,11 @@
 set -e
 
 TASK_NAME="$1"
+MODEL_PATH="$2"
 
-if [ -z "$TASK_NAME" ]; then
-  echo "Usage: sbatch run_lmeval.sh <task_name>"
-  echo "Example: sbatch run_lmeval.sh hellaswag"
+if [ -z "$TASK_NAME" ] || [ -z "$MODEL_PATH" ]; then
+  echo "Usage: sbatch run_lmeval.sh <task_name> <model_path>"
+  echo "Example: sbatch run_lmeval.sh hellaswag ./weights/model"
   exit 1
 fi
 
@@ -22,6 +23,7 @@ mkdir -p logs
 exec > "logs/${TASK_NAME}-${SLURM_JOB_ID}.out" 2>&1
 
 echo "Running task: $TASK_NAME"
+echo "Model path: $MODEL_PATH"
 
 echo "=======Conda and CUDA=========="
 module load CUDA
@@ -35,4 +37,4 @@ echo "============================"
 python -m lm_eval \
   --model gidd \
   --tasks "$TASK_NAME" \
-  --model_args "model_path=./weights/gidd-base-pu-0.2,num_denoising_steps=128"
+  --model_args "model_path=${MODEL_PATH},num_denoising_steps=128"

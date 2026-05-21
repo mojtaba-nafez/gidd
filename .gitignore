@@ -28,3 +28,8 @@ weights/
 samples.json
 samples_correct.json
 
+
+/eval_slurm_script/
+/logs-eval-slurm/
+sample.json
+sample.pt

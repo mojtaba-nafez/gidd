@@ -217,6 +217,7 @@ class DDiT_NVIBBlock(nn.Module):
             batch_first=True,
             logging=self.training,
     )
+    # print("alpha.squeeze()", alpha.squeeze())
     if self.training or kl_loss:
       self.kl_gaussian, self.kl_dirichlet = self.get_kl_loss(z, pi, mu, logvar, alpha, mask)
 
@@ -262,7 +263,7 @@ class DDiT_NVIBBlock(nn.Module):
     attn_weights = torch.matmul(query_states, key_states.transpose(2, 3)) * self.scaling
     
     pi_clamped = torch.clamp(pi, min=torch.finfo(pi.dtype).tiny)
-    exp_scale = 1.0
+    exp_scale = 0.2
     log_pi = torch.log(pi_clamped).permute(0, 2, 1).unsqueeze(1)  # (B, 1, 1, Nl)
     
     l2_norm = (torch.norm(input_for_kv, dim=-1, keepdim=True) ** 2)  # (B, Nl, 1)

@@ -7,7 +7,24 @@ import tqdm
 import torch
 import torch.nn.functional as F
 from transformers import AutoModelForCausalLM, AutoTokenizer
+# from transformers import GPT2TokenizerFast
+from collections import Counter
+import math
 
+def empirical_entropy(items):
+    counts = Counter(items)
+    total = sum(counts.values())
+
+    if total == 0:
+        return 0.0
+
+    return -sum((c / total) * math.log(c / total) for c in counts.values())
+
+
+def distinct_n(items):
+    if len(items) == 0:
+        return 0.0
+    return len(set(items)) / len(items)
 
 @hydra.main(config_path="../configs", config_name="gen_ppl", version_base="1.1")
 def main(args):
@@ -32,7 +49,18 @@ def main(args):
     if z_ts.shape[1] == 1:
         z_ts = z_ts.squeeze(1)
     texts = model_tokenizer.batch_decode(z_ts, skip_special_tokens=True)
+    # Diversity metrics over generated samples.
+    # Use the same tokenizer that produced the samples, so the entropy is comparable
+    # across runs that use the same generation tokenizer.
+    generated_token_ids = []
 
+    for text in texts:
+        token_ids = model_tokenizer.encode(text, add_special_tokens=False)
+        generated_token_ids.extend(token_ids)
+
+    unigram_entropy = empirical_entropy(generated_token_ids)
+    distinct_1 = distinct_n(generated_token_ids)
+    
     total_acc = 0
     total_nll = 0
     total_tokens = 0
@@ -83,6 +111,11 @@ def main(args):
         "ppl": ppl,
         "acc": acc,
         "tokens": total_tokens,
+
+        # Diversity metrics
+        "unigram_entropy": unigram_entropy,
+        "distinct_1": distinct_1,
+
         "per_sample": per_sample
     }
 
@@ -96,6 +129,8 @@ def main(args):
         metrics["ppl"],
         metrics["acc"],
         metrics["tokens"],
+        metrics["unigram_entropy"],
+        metrics["distinct_1"],
     ])))
     print("===============")
 
