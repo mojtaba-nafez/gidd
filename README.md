@@ -123,17 +123,34 @@ python gidd/eval/self_correction.py path="/idiap/temp/mnafez/research/gidd/weigh
 
 # Training:
 
-## Baseline
+## Intractive Session Training:
+
 
 ```
-torchrun --nnodes 1 --nproc_per_node 1 --master_port 29501 gidd/train.py --config-name gidd model.p_uniform=0.2 logging.run_name="'small-nvib-gidd+-owt-pu=0.2'"
-```
-
-```
-sbatch -p gpu -A balm ./training_scripts_slurm/main.sh
+torchrun --nnodes 1 --nproc_per_node 1 --master_port 29501 gidd/train.py --config-name gidd model.p_uniform=0.2 model.nvib_layers=[4,6,8] logging.run_name="'small-nvib-gidd+-owt-pu=0.2'" training.train_batch_size=8 model=small
 ```
 
 
+## Baseline Replication (same parameter numbers)
+
+```
+sbatch -p gpu -A balm --gres=gpu:1 slurm/training_scripts_slurm/main.sh --gpus 1 \
+  model.p_uniform=0.2 \
+  model.nvib_layers=[] \
+  logging.run_name=small-nvib-gidd+-owt-pu0.2```
+```
+
+## NVIB Training
+```
+sbatch -p gpu -A balm --gres=gpu:rtx3090:1 slurm/training_scripts_slurm/main.sh --gpus 1 \
+  model.p_uniform=0.2 \
+  model.nvib_layers=[4,6,8] \
+  logging.run_name=small-nvib-gidd+-owt-pu0.2 training.train_batch_size=8 model=small
+```
+
+
+
+# Evaluation
 
 ### Baseline: original checkpoint
 
