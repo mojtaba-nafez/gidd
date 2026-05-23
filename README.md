@@ -129,4 +129,3 @@ python gidd/eval/generative_ppl.py samples_path="/idiap/temp/mnafez/research/gid
 
 ### NVIB: Our checkpoint  -- Temporal Runs
 
-

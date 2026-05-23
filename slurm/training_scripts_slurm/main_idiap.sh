@@ -3,7 +3,7 @@
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=8
 #SBATCH --partition=gpu
-#SBATCH --time=0-30:00:00
+#SBATCH --time=0-35:00:00
 #SBATCH --output=logs-train-slurm/%x-%j.out
 #SBATCH --error=logs-train-slurm/%x-%j.err
 #SBATCH --requeue
