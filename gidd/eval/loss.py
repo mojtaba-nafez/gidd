@@ -42,9 +42,12 @@ def main(args):
         num_eval_samples = 0
         for test_batch in tqdm.tqdm(test_dl, desc="Eval", dynamic_ncols=True):
             bs = test_batch["input_ids"].size(0)
-
             test_batch = {k: v.to(device, non_blocking=True) for k, v in test_batch.items()}
-            loss, metrics = trainer(test_batch)
+            try:
+                loss, metrics = trainer(test_batch, kl_loss=True)
+            except Exception as e:
+                print(f"Error occurred while processing batch: {e}")
+                continue
 
             for k, v in metrics.items():
                 eval_metrics[k] = eval_metrics.get(k, 0) + (v.item() if isinstance(v, torch.Tensor) else v) * bs

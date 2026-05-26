@@ -51,7 +51,7 @@ class Exponential(nn.Module):
     """
     Simple exponential activation function
     """
-    def __init__(self, max_val=17.0, scale=0.2):
+    def __init__(self, max_val=17.0, scale=0.04):
         super().__init__()
         self.max_val = max_val
         self.scale = scale
@@ -61,6 +61,10 @@ class Exponential(nn.Module):
         # print("x.max(), x.min(), x.mean()", x.max().item(), x.min().item(), x.mean().item())
         # temp = torch.exp(torch.clamp(torch.mul(x, self.scale), max=self.max_val))
         # print("temp.max(), temp.min(), temp.mean()", temp.max().item(), temp.min().item(), temp.mean().item())
+        if self.training:
+            self.scale=0.2
+        else:
+            self.scale=0.04
         return torch.exp(torch.clamp(torch.mul(x, self.scale), max=self.max_val))
         
 

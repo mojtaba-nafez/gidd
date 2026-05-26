@@ -179,8 +179,10 @@ def get_dataloaders(config, tokenizer, train_batch_size=None, eval_batch_size=No
         eval_batch_size = config.training.eval_batch_size
 
     train_ds, test_ds = get_dataset(config)
-
-    if config.data.pre_tokenize:
+    print(config)
+    # if config.data.pre_tokenize:
+    print(config.data.tokenizer_name)
+    if config.data.tokenizer_name:
         max_seq_len = config.model.max_seq_len
         sequence_packing = config.data.sequence_packing
         cache_key = hashlib.sha256(
