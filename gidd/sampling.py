@@ -49,7 +49,7 @@ class GiddSampler(Sampler):
             # z_t.shape: torch.Size([1, 512])
             # t.shape:   torch.Size([1]) 
             # s.shape:   torch.Size([1])
-            logits = self.model(z_t, t)
+            logits = self.model(z_t, t, use_trained_scaling_factor=True)
             # logits.shape: torch.Size([1, 512, 50258])
             logits[..., self.tokenizer.mask_token_id] = -1e6
 

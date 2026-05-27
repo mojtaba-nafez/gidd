@@ -27,6 +27,15 @@ def main(config):
     trainer = get_trainer(config, model, tokenizer, noise_schedule, loss_fn, dtype)
     trainer = trainer.to(device)
 
+    # Total number of parameters
+    total_params = sum(p.numel() for p in trainer.parameters())
+
+    # Number of trainable parameters
+    trainable_params = sum(p.numel() for p in trainer.parameters() if p.requires_grad)
+
+    print(f"Total parameters: {total_params:,}")
+    print(f"Trainable parameters: {trainable_params:,}")
+
     print("trainer.device:", trainer.device)
     batch = {
         "input_ids": torch.randint(0, len(tokenizer), (4, 512), dtype=torch.long, device=trainer.device),

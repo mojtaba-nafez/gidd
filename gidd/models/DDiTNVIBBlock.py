@@ -199,7 +199,7 @@ class DDiT_NVIBBlock(nn.Module):
       return bias_dropout_add_scale_fused_inference
 
 
-  def forward(self, x, rotary_cos_sin, c, seqlens=None, kl_loss=False):
+  def forward(self, x, rotary_cos_sin, c, seqlens=None, kl_loss=False, use_trained_scaling_factor=False, activate_nvib_noise=False):
     # print(self.training)
     batch_size, seq_len = x.shape[0], x.shape[1]
 
@@ -216,6 +216,8 @@ class DDiT_NVIBBlock(nn.Module):
             encoder_output=x,
             batch_first=True,
             logging=self.training,
+            use_trained_scaling_factor=use_trained_scaling_factor,
+            activate_nvib_noise=activate_nvib_noise
     )
     # print("alpha.squeeze()", alpha.squeeze())
     if self.training or kl_loss:
@@ -264,7 +266,7 @@ class DDiT_NVIBBlock(nn.Module):
     
     pi_clamped = torch.clamp(pi, min=torch.finfo(pi.dtype).tiny)
     
-    if self.training:
+    if self.training or use_trained_scaling_factor:
       exp_scale =  0.2
     else:
       exp_scale = 0.04

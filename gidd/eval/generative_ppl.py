@@ -20,6 +20,20 @@ def empirical_entropy(items):
 
     return -sum((c / total) * math.log(c / total) for c in counts.values())
 
+def empirical_entropy_per_sample(items):
+    entropies = []
+    for row in items:
+        row = torch.tensor(row)
+        counts = torch.unique(
+            row,
+            return_counts=True,
+            sorted=True
+        )[1]
+        probs = counts.float() / counts.sum()
+        entropy = torch.special.entr(probs).sum().item()
+        entropies.append(entropy)
+    return entropies
+
 
 def distinct_n(items):
     if len(items) == 0:
@@ -53,14 +67,16 @@ def main(args):
     # Use the same tokenizer that produced the samples, so the entropy is comparable
     # across runs that use the same generation tokenizer.
     generated_token_ids = []
-
+    samples_generated_token_ids = []
     for text in texts:
         token_ids = model_tokenizer.encode(text, add_special_tokens=False)
         generated_token_ids.extend(token_ids)
+        samples_generated_token_ids.append(token_ids)
 
     unigram_entropy = empirical_entropy(generated_token_ids)
     distinct_1 = distinct_n(generated_token_ids)
-    
+    unigram_entropy_per_sample = empirical_entropy_per_sample(samples_generated_token_ids)
+
     total_acc = 0
     total_nll = 0
     total_tokens = 0
@@ -90,14 +106,12 @@ def main(args):
             sample_nll = (nll * loss_mask).sum(dim=1) / loss_mask.sum(dim=1).clamp_min(1)
             sample_ppl = torch.exp(sample_nll)
 
-            for text, ppl_i in zip(xs, sample_ppl.cpu().tolist()):
+            for text, ppl_i, entropy_i in zip(xs, sample_ppl.cpu().tolist(), unigram_entropy_per_sample[i:i + args.batch_size]):
                 per_sample.append({
-                    "text": text,
                     "ppl": ppl_i,
+                    "unigram_entropy": entropy_i,
+                    "text": text
                 })
-                
-            # if i > 10:
-            #     break
 
     nll = total_nll / total_tokens
     ppl = np.exp(total_nll / total_tokens)
@@ -115,6 +129,7 @@ def main(args):
         # Diversity metrics
         "unigram_entropy": unigram_entropy,
         "distinct_1": distinct_1,
+        "unigram_entropy_per_sample": sum(unigram_entropy_per_sample) / len(unigram_entropy_per_sample),
 
         "per_sample": per_sample
     }
@@ -131,6 +146,7 @@ def main(args):
         metrics["tokens"],
         metrics["unigram_entropy"],
         metrics["distinct_1"],
+        metrics["unigram_entropy_per_sample"],
     ])))
     print("===============")
 

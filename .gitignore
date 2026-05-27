@@ -33,3 +33,5 @@ samples_correct.json
 /logs-eval-slurm/
 sample.json
 sample.pt
+nvib_baseline*.json
+nvib_baseline*.pt

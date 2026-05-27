@@ -266,7 +266,7 @@ class DDiTBlock(nn.Module):
       return bias_dropout_add_scale_fused_inference
 
 
-  def forward(self, x, rotary_cos_sin, c, seqlens=None, kl_loss=False):
+  def forward(self, x, rotary_cos_sin, c, seqlens=None, kl_loss=False, use_trained_scaling_factor=False, activate_nvib_noise=False):
     batch_size, seq_len = x.shape[0], x.shape[1]
 
     bias_dropout_scale_fn = self._get_bias_dropout_scale()
@@ -405,14 +405,13 @@ class DIT(nn.Module, huggingface_hub.PyTorchModelHubMixin):
     else:
       return  bias_dropout_add_scale_fused_inference
 
-  def forward(self, indices, sigma, kl_loss=False, latent_noise=False):
+  def forward(self, indices, sigma, kl_loss=False, latent_noise=False, use_trained_scaling_factor=False, activate_nvib_noise=False):
     x = self.vocab_embed(indices)
     c = F.silu(self.sigma_map(sigma))
 
     rotary_cos_sin = self.rotary_emb(x)
     
     for i in range(len(self.blocks)):      
-      
       # if i in [4, 6, 8]: # N4
       #   std = x.std(unbiased=False).detach()
       #   noise_std = 0.05
@@ -431,7 +430,7 @@ class DIT(nn.Module, huggingface_hub.PyTorchModelHubMixin):
           x = x + torch.randn_like(x) * (noise_std * std)
       
       
-      x = self.blocks[i](x, rotary_cos_sin, c, seqlens=None, kl_loss=kl_loss)
+      x = self.blocks[i](x, rotary_cos_sin, c, seqlens=None, kl_loss=kl_loss, use_trained_scaling_factor=use_trained_scaling_factor, activate_nvib_noise=activate_nvib_noise)
     x = self.output_layer(x, c)
 
     x = x.scatter_add(-1, indices.unsqueeze(-1), self.logit_bias.to(x.dtype).expand_as(x))

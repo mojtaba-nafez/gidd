@@ -9,3 +9,4 @@ max_patience: 32
 tokens_per_step: 1
 metrics_path: metrics.csv
 latent_noise: False
+activate_nvib_noise: False

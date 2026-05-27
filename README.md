@@ -21,7 +21,7 @@ sbatch --environment=gidd  -A go082 slurm/training_scripts_slurm/main_cscs.sh \
   model.p_uniform=0.2 \
   model.nvib_layers=[] \
   logging.run_name=small-nvib-gidd+-owt-pu0.2 model=small \
-  training.num_train_steps=125000 model=small
+  training.num_train_steps=125000 model=small model.n_blocks=13
 ```
 
 ## NVIB Training
@@ -29,7 +29,7 @@ sbatch --environment=gidd  -A go082 slurm/training_scripts_slurm/main_cscs.sh \
 ```
 sbatch --environment=gidd  -A go082 slurm/training_scripts_slurm/main_cscs.sh \
   model.p_uniform=0.2 \
-  model.nvib_layers=[4,6,8] \
+  model.nvib_layers=[3,4,5,6,7,8] \
   logging.run_name=small-nvib-gidd+-owt-pu0.2 model=small \
   training.num_train_steps=125000 model=small
 ```

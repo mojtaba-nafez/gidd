@@ -56,12 +56,12 @@ class Exponential(nn.Module):
         self.max_val = max_val
         self.scale = scale
 
-    def forward(self, x):
+    def forward(self, x, use_trained_scaling_factor=False):
         # print("x.shape", x.shape)
         # print("x.max(), x.min(), x.mean()", x.max().item(), x.min().item(), x.mean().item())
         # temp = torch.exp(torch.clamp(torch.mul(x, self.scale), max=self.max_val))
         # print("temp.max(), temp.min(), temp.mean()", temp.max().item(), temp.min().item(), temp.mean().item())
-        if self.training:
+        if self.training or use_trained_scaling_factor:
             self.scale=0.2
         else:
             self.scale=0.04
@@ -247,7 +247,7 @@ class NVIB(nn.Module):
             self.prior_log_alpha_stdev * (self.alpha_tau),
         )
 
-    def reparameterize_gaussian(self, mu, logvar):
+    def reparameterize_gaussian(self, mu, logvar, activate_nvib_noise=False):
         """
         Reparameterise for gaussian
         Train = sample
@@ -258,8 +258,8 @@ class NVIB(nn.Module):
         :return: z: sample from a gaussian distribution or mean [Nl,B,P]
         """
 
-        if self.training:
-            std = torch.exp(0.5 * logvar)  # [Nl,B,P]
+        if self.training or activate_nvib_noise:
+            std = 30 * torch.exp(0.5 * logvar)  # [Nl,B,P]
             eps = torch.randn_like(std)  # [Nl,B,P]
             z = eps.mul(std).add_(mu)  # [Nl,B,P]
         else:
@@ -391,7 +391,7 @@ class NVIB(nn.Module):
         ) / n
         return kl
 
-    def forward(self, encoder_output, mask=None, **kwargs):
+    def forward(self, encoder_output, mask=None, use_trained_scaling_factor=False, activate_nvib_noise=False, **kwargs):
         """
         The latent layer for NVIB. Notice length comes in as NS and exits Nl (Ns+1) for the prior
         :param encoder_output:[B, Ns, P]
@@ -414,7 +414,7 @@ class NVIB(nn.Module):
         mu = self.mu_proj(encoder_output)
         logvar = self.logvar_proj(encoder_output)
 
-        alpha = self.alpha_activation(self.alpha_proj(encoder_output))
+        alpha = self.alpha_activation(self.alpha_proj(encoder_output), use_trained_scaling_factor=use_trained_scaling_factor)
 
         mask = mask.squeeze(1).squeeze(1) if mask is not None else None
 
@@ -424,7 +424,7 @@ class NVIB(nn.Module):
             (torch.log(self.prior_var).repeat(B, 1, 1), logvar), 1)
         
         alpha = torch.cat((self.alpha_activation(
-            self.prior_log_alpha).repeat(B, 1, 1), alpha), 1)
+            self.prior_log_alpha, use_trained_scaling_factor=use_trained_scaling_factor).repeat(B, 1, 1), alpha), 1)
         
         mask = (
             torch.cat(
@@ -433,7 +433,7 @@ class NVIB(nn.Module):
             else None
         )
         
-        z = self.reparameterize_gaussian(mu, logvar)
+        z = self.reparameterize_gaussian(mu, logvar, activate_nvib_noise=activate_nvib_noise)
         pi = self.reparameterize_dirichlet(alpha, mask)
        
         # return {

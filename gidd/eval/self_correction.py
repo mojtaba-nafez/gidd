@@ -8,8 +8,8 @@ from gidd.checkpoints import load_checkpoint
 from gidd.utils import sample_categorical
 
 
-def correction_step(model, tokenizer, z_t, t, temp, tokens_per_step, latent_noise=False):
-    logits = model(z_t, t, latent_noise=latent_noise)
+def correction_step(model, tokenizer, z_t, t, temp, tokens_per_step, latent_noise=False, activate_nvib_noise=False):
+    logits = model(z_t, t, latent_noise=latent_noise, activate_nvib_noise=activate_nvib_noise)
     logits[..., tokenizer.mask_token_id] = -1e6
     p_t = (logits / temp).softmax(-1)
     # p_t.shape: torch.Size([1, 512, 50258])
@@ -32,7 +32,7 @@ def main(args):
     torch.set_grad_enabled(False)
     ckpt_path = hydra.utils.to_absolute_path(args.path)
     print("args.latent_noise", args.latent_noise)
-
+    print("args.activate_nvib_noise", args.activate_nvib_noise)
     model, noise_schedule, tokenizer, config = load_checkpoint(ckpt_path, device=device)
     model.eval()
     config.training.eval_batch_size = args.batch_size
@@ -66,7 +66,7 @@ def main(args):
         early_stopped = 0
         for i in range(args.num_denoising_steps):
             with torch.no_grad(), torch.autocast(device.type, dtype=dtype):
-                z_t_next, acc = correction_step(model, tokenizer, z_t, t, args.temp, args.tokens_per_step, latent_noise=args.latent_noise)
+                z_t_next, acc = correction_step(model, tokenizer, z_t, t, args.temp, args.tokens_per_step, latent_noise=args.latent_noise, activate_nvib_noise=args.activate_nvib_noise)
 
                 if acc > max_acc:
                     max_acc = acc
