@@ -40,8 +40,8 @@ sbatch -p gpu -A balm /idiap/temp/mnafez/research/gidd/slurm/eval_slurm_script/m
   
 ```
 sbatch -p gpu -A balm /idiap/temp/mnafez/research/gidd/slurm/eval_slurm_script/main_idiap.sh \
-/idiap/temp/mnafez/research/gidd/our-pt-checkpoints/cscs-trained/pt-p-0.2-small-nvib \
-/idiap/temp/mnafez/research/gidd/gemma_metrics/our_pt_baseline_nvib_cscs_nvib_noisey_30 nvib
+/idiap/temp/mnafez/research/gidd/our-pt-checkpoints/cscs-trained/pt-p-0.2-small-nvib-3-4-5-6-7-8 \
+/idiap/temp/mnafez/research/gidd/gemma_metrics/nvib-3-4-5-6-7-8-cscs
 ```
 
 
@@ -137,13 +137,13 @@ python gidd/eval/generative_ppl.py samples_path="/idiap/temp/mnafez/research/gid
 
 
 
-python gidd/eval/generate_samples.py path="/idiap/temp/mnafez/research/gidd/our-pt-checkpoints/cscs-trained/pt-p-0.2-small-nvib" samples_path="nvib_baseline.pt" num_samples=32 num_denoising_steps=128 batch_size=16
+python gidd/eval/generate_samples.py path="/idiap/temp/mnafez/research/gidd/our-pt-checkpoints/cscs-trained/pt-p-0.2-small-nvib-3-4-5-6-7-8" samples_path="nvib_baseline.pt" num_samples=32 num_denoising_steps=128 batch_size=16
 
 
 python gidd/eval/generative_ppl.py samples_path="nvib_baseline.pt" model_tokenizer=gpt2 pretrained_model=google/gemma-2-9b batch_size=1 metrics_path="nvib_baseline.json"
 
 
-python gidd/eval/self_correction.py path="/idiap/temp/mnafez/research/gidd/our-pt-checkpoints/cscs-trained/pt-p-0.2-small-nvib" samples_path="nvib_baseline.pt" corrected_samples_path="/idiap/temp/mnafez/research/gidd/nvib_baseline_correct.pt" batch_size=16 num_denoising_steps=128 temp=0.1 
+python gidd/eval/self_correction.py path="/idiap/temp/mnafez/research/gidd/our-pt-checkpoints/cscs-trained/pt-p-0.2-small-nvib-3-4-5-6-7-8"  samples_path="nvib_baseline.pt" corrected_samples_path="/idiap/temp/mnafez/research/gidd/nvib_baseline_correct.pt" batch_size=16 num_denoising_steps=128 temp=0.1 
 
 python gidd/eval/generative_ppl.py samples_path="nvib_baseline_correct.pt" model_tokenizer=gpt2 pretrained_model=google/gemma-2-9b batch_size=1 metrics_path=nvib_baseline_correct.json
 

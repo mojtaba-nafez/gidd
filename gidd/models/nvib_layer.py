@@ -259,7 +259,7 @@ class NVIB(nn.Module):
         """
 
         if self.training or activate_nvib_noise:
-            std = 30 * torch.exp(0.5 * logvar)  # [Nl,B,P]
+            std = torch.exp(0.5 * logvar)  # [Nl,B,P]
             eps = torch.randn_like(std)  # [Nl,B,P]
             z = eps.mul(std).add_(mu)  # [Nl,B,P]
         else:
