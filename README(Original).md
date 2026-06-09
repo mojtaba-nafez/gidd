@@ -110,7 +110,7 @@ python gidd/eval/generative_ppl.py samples_path=samples.pt model_tokenizer=gpt2 
 #### Validation loss
 A simple helper script to compute the loss of a trained model on the entire validation split.
 ```bash
-python gidd/eval/loss.py path="/idiap/temp/mnafez/research/gidd/weights/gidd-base-pu-0.2" batch_size=32
+python gidd/eval/loss.py path="/idiap/temp/mnafez/research/gidd/our-pt-checkpoints/cscs-trained/pt-p-0.2-small" batch_size=32
 ```
 
 #### Self-correction

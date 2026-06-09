@@ -44,7 +44,7 @@ def main(args):
             bs = test_batch["input_ids"].size(0)
             test_batch = {k: v.to(device, non_blocking=True) for k, v in test_batch.items()}
             try:
-                loss, metrics = trainer(test_batch, kl_loss=True)
+                loss, metrics = trainer(test_batch, kl_loss=True, use_trained_scaling_factor=False)
             except Exception as e:
                 print(f"Error occurred while processing batch: {e}")
                 continue
