@@ -84,7 +84,7 @@ class AutoregressiveTrainer(nn.Module):
         self.dtype = dtype if dtype else self.dtype
         return super().to(device, dtype)
 
-    def forward(self, batch):
+    def forward(self, batch, kl_loss=True):
         with torch.autocast(device_type=self.device.type, dtype=self.dtype):
             labels = batch["input_ids"][:, 1:]
             loss_mask = batch["attention_mask"][:, :-1]

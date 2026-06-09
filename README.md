@@ -10,24 +10,45 @@ source ~/miniconda3/bin/activate
 conda activate gidd
 ```
 
+4 NVIB block:
 ```
 torchrun --nnodes 1 --nproc_per_node 4 --master_port 29501 gidd/train.py --config-name gidd model.p_uniform=0.2 model.nvib_layers=[4,6,8] logging.run_name="'small-nvib-gidd+-owt-pu=0.2'" model=small training.num_train_steps=125000
 ```
 
+13 Block Baseline:
+```
+torchrun --nnodes 1 --nproc_per_node 4 --master_port 29501 gidd/train.py --config-name gidd model.p_uniform=0.2 model.nvib_layers=[] logging.run_name="'small-nvib-gidd+-owt-pu=0.2'" model=small training.num_train_steps=125000 model=small model.n_blocks=13
+```
+
+AR:
+```
+torchrun --nnodes 1 --nproc_per_node 4 --master_port 29501 gidd/train.py --config-name ar logging.run_name="'ar-baseline'" model=small training.num_train_steps=125000 model=small model.n_blocks=11
+
+```
 ## Baseline Replication (same parameter numbers)
 
 ```
-sbatch --environment=gidd  -A go082 slurm/training_scripts_slurm/main_cscs.sh \
+sbatch --environment=gidd  -A a0236 slurm/training_scripts_slurm/main_cscs.sh \
   model.p_uniform=0.2 \
   model.nvib_layers=[] \
   logging.run_name=small-nvib-gidd+-owt-pu0.2 model=small \
   training.num_train_steps=125000 model=small model.n_blocks=13
 ```
 
+## AR Replication (same parameter numbers)
+
+
+```
+sbatch --environment=gidd --job-name=ar_baseline  -A a0236 slurm/training_scripts_slurm/main_cscs.sh \
+  config_name=ar \
+  logging.run_name=ar-baseline model=small \
+  training.num_train_steps=125000 model=small model.n_blocks=11
+```
+
 ## NVIB Training
 
 ```
-sbatch --environment=gidd  -A go082 slurm/training_scripts_slurm/main_cscs.sh \
+sbatch --environment=gidd  -A a0236 slurm/training_scripts_slurm/main_cscs.sh \
   model.p_uniform=0.2 \
   model.nvib_layers=[3,4,5,6,7,8] \
   logging.run_name=small-nvib-gidd+-owt-pu0.2 model=small \

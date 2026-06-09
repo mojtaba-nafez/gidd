@@ -153,6 +153,7 @@ def main(config):
     flops_per_batch = calculate_flops_per_batch(config, model, len(tokenizer), non_emb_params, method="hoffmann")
 
     trainable_params = sum(p.numel() for p in trainer.parameters() if p.requires_grad)
+    model_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
 
     if config.training.compile_model:
         opt_trainer = torch.compile(trainer)
@@ -175,6 +176,7 @@ def main(config):
         print(f"* Non-embedding parameters: {non_emb_params_str}")
         print(f"* Trainable parameters: {trainable_params_str}")
         print(f"* Model dtype: {next(iter(model.parameters())).dtype}")
+        print(f"* Model Trainable Parameter: {model_params}")
         print(f"*************************")
 
     if is_distributed and hasattr(train_dl.sampler, "set_epoch"):
