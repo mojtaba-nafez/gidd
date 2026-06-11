@@ -193,3 +193,14 @@ python gidd/eval/get_ppl_training_data.py model_tokenizer=gpt2 pretrained_model=
 sbatch -p gpu -A balm --gres=gpu:0 /idiap/temp/mnafez/research/gidd/slurm/eval_slurm_script/temp.sh 
 
 ```
+
+python gidd/eval/generate_samples.py path="/idiap/temp/mnafez/research/gidd/our-pt-checkpoints/cscs-trained/pt-p-0.2-small-13-block" samples_path="samples.pt" num_samples=32 num_denoising_steps=128 batch_size=16
+
+python gidd/eval/self_correction.py path="/idiap/temp/mnafez/research/gidd/our-pt-checkpoints/cscs-trained/pt-p-0.2-small-13-block" samples_path="samples.pt" corrected_samples_path="/idiap/temp/mnafez/research/gidd/corrected_samples.pt" batch_size=16 num_denoising_steps=128 temp=0.1 latent_noise=True
+
+python gidd/eval/generative_ppl.py samples_path="corrected_samples.pt" model_tokenizer=gpt2 pretrained_model=google/gemma-2-9b batch_size=1 metrics_path=corrected_samples.json 
+
+
+python gidd/eval/self_correction.py path="/idiap/temp/mnafez/research/gidd/our-pt-checkpoints/cscs-trained/pt-p-0.2-small-13-block" samples_path="samples.pt" corrected_samples_path="/idiap/temp/mnafez/research/gidd/corrected_samples.pt" batch_size=16 num_denoising_steps=128 temp=0.1 latent_noise=False
+
+python gidd/eval/generative_ppl.py samples_path="corrected_samples.pt" model_tokenizer=gpt2 pretrained_model=google/gemma-2-9b batch_size=1 metrics_path=corrected_samples.json 

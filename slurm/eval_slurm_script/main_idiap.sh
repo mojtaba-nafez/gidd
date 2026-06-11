@@ -150,18 +150,18 @@ python gidd/eval/generative_ppl.py \
 python gidd/eval/self_correction.py \
     path="$CHECKPOINT_PATH" \
     samples_path="$BASE_SAMPLES" \
-    corrected_samples_path="$CORRECT_SAMPLES_NVIB_NOISE" \
+    corrected_samples_path="$CORRECT_N12_SAMPLES" \
     batch_size=16 \
     num_denoising_steps=128 \
     temp=0.1 \
     latent_noise=True
 
 python gidd/eval/generative_ppl.py \
-    samples_path="$CORRECT_SAMPLES_NVIB_NOISE" \
+    samples_path="$CORRECT_N12_SAMPLES" \
     model_tokenizer=gpt2 \
     pretrained_model=google/gemma-2-9b \
     batch_size=1 \
-    metrics_path="$CORRECT_METRICS_NVIB_NOISE"
+    metrics_path="$CORRECT_N12_METRICS"
 
 
 # =========================================================
@@ -171,18 +171,18 @@ python gidd/eval/generative_ppl.py \
 python gidd/eval/self_correction.py \
     path="$CHECKPOINT_PATH" \
     samples_path="$BASE_SAMPLES" \
-    corrected_samples_path="$CORRECT_N12_SAMPLES" \
+    corrected_samples_path="$CORRECT_SAMPLES_NVIB_NOISE" \
     batch_size=16 \
     num_denoising_steps=128 \
     temp=0.1 \
     activate_nvib_noise=True
 
 python gidd/eval/generative_ppl.py \
-    samples_path="$CORRECT_N12_SAMPLES" \
+    samples_path="$CORRECT_SAMPLES_NVIB_NOISE" \
     model_tokenizer=gpt2 \
     pretrained_model=google/gemma-2-9b \
     batch_size=1 \
-    metrics_path="$CORRECT_N12_METRICS"
+    metrics_path="$CORRECT_METRICS_NVIB_NOISE"
 
 # =========================================================
 # 6. Self correction 512
