@@ -14,30 +14,6 @@ set -e
 
 mkdir -p logs-eval-slurm
 
-# =========================================================
-# Usage:
-#
-# sbatch -p gpu -A balm main_idiap.sh \
-#   <checkpoint_path> \
-#   <output_dir> \
-#   [name_prefix]
-#
-# Example:
-#
-# sbatch -p gpu -A balm main_idiap.sh \
-#   /path/to/checkpoint \
-#   /path/to/output \
-#   nvib
-#
-# If no prefix is given:
-# baseline.pt
-# baseline_correct.pt
-#
-# If prefix=nvib:
-# nvib_baseline.pt
-# nvib_baseline_correct.pt
-# =========================================================
-
 # -----------------------------
 # Input arguments
 # -----------------------------
@@ -75,8 +51,6 @@ CORRECT_N12_SAMPLES="${OUTPUT_DIR}/${PREFIX}baseline_correct_N12.pt"
 CORRECT_N12_METRICS="${OUTPUT_DIR}/${PREFIX}baseline_correct_N12.json"
 
 
-CORRECT_SAMPLES_NVIB_NOISE="${OUTPUT_DIR}/${PREFIX}baseline_correct_nvib_noise.pt"
-CORRECT_METRICS_NVIB_NOISE="${OUTPUT_DIR}/${PREFIX}baseline_correct_nvib_noise.json"
 
 
 CORRECT_512_SAMPLES="${OUTPUT_DIR}/${PREFIX}baseline_correct_512.pt"
@@ -85,8 +59,6 @@ CORRECT_512_METRICS="${OUTPUT_DIR}/${PREFIX}baseline_correct_512.json"
 CORRECT_N12_512_SAMPLES="${OUTPUT_DIR}/${PREFIX}baseline_correct_N12_512.pt"
 CORRECT_N12_512_METRICS="${OUTPUT_DIR}/${PREFIX}baseline_correct_N12_512.json"
 
-CORRECT_512_NVIB_NOISE="${OUTPUT_DIR}/${PREFIX}baseline_correct_512_nvib_noise.pt"
-CORRECT_512_NVIB_NOISE_METRICS="${OUTPUT_DIR}/${PREFIX}baseline_correct_512_nvib_noise.json"
 
 echo "======= Conda and CUDA ======="
 
@@ -143,25 +115,6 @@ python gidd/eval/generative_ppl.py \
     batch_size=1 \
     metrics_path="$CORRECT_METRICS"
 
-# =========================================================
-# 4. Self correction + latent noise
-# =========================================================
-
-python gidd/eval/self_correction.py \
-    path="$CHECKPOINT_PATH" \
-    samples_path="$BASE_SAMPLES" \
-    corrected_samples_path="$CORRECT_N12_SAMPLES" \
-    batch_size=16 \
-    num_denoising_steps=128 \
-    temp=0.1 \
-    latent_noise=True
-
-python gidd/eval/generative_ppl.py \
-    samples_path="$CORRECT_N12_SAMPLES" \
-    model_tokenizer=gpt2 \
-    pretrained_model=google/gemma-2-9b \
-    batch_size=1 \
-    metrics_path="$CORRECT_N12_METRICS"
 
 
 # =========================================================
@@ -202,8 +155,6 @@ python gidd/eval/generative_ppl.py \
     pretrained_model=google/gemma-2-9b \
     batch_size=1 \
     metrics_path="$CORRECT_N12_512_METRICS"
-
-
 
 
 echo "================================"

@@ -9,23 +9,31 @@ from gidd.checkpoints import load_checkpoint  # or wherever load_checkpoint live
 # samples_path = "/idiap/temp/mnafez/research/gidd/corrected_samples_noisy_N2.pt"
 # samples_path = "/idiap/temp/mnafez/research/gidd/samples_1024_original.pt"
 samples_path = "/idiap/temp/mnafez/research/gidd/metrics-corrected_samples_noisy_N4.json"
-ckpt_path = "/idiap/temp/mnafez/research/gidd/weights/gidd-base-pu-0.2"
+ckpt_path = "/idiap/temp/mnafez/research/gidd/weights/mdlm-small"
 
 device = torch.device("cpu")
 
 # load tokenizer from the same checkpoint
 model, noise_schedule, tokenizer, config = load_checkpoint(ckpt_path, device=device)
+# Total number of parameters
+total_params = sum(p.numel() for p in model.parameters())
+
+# Number of trainable parameters
+trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+
+print(f"Total parameters: {total_params:,}")
+print(f"Trainable parameters: {trainable_params:,}")
 
 # load token ids
-samples = torch.load(samples_path, map_location="cpu")
+# samples = torch.load(samples_path, map_location="cpu")
 
-print("samples shape:", samples.shape)
+# print("samples shape:", samples.shape)
 
-# detokenize
-texts = tokenizer.batch_decode(samples, skip_special_tokens=True)
+# # detokenize
+# texts = tokenizer.batch_decode(samples, skip_special_tokens=True)
 
-for i, txt in enumerate(texts):
-    if i> (len(texts)-10):
-        print(f"========== SAMPLE {i} ==========")
-        print(txt)
+# for i, txt in enumerate(texts):
+#     if i> (len(texts)-10):
+#         print(f"========== SAMPLE {i} ==========")
+#         print(txt)
     
