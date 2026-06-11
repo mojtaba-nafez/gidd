@@ -140,25 +140,6 @@ python gidd/eval/generative_ppl.py \
     metrics_path="$CORRECT_METRICS"
 
 
-# =========================================================
-# 5. Self correction + nvib noise
-# =========================================================
-
-python gidd/eval/self_correction.py \
-    path="$CHECKPOINT_PATH" \
-    samples_path="$BASE_SAMPLES" \
-    corrected_samples_path="$CORRECT_N12_SAMPLES" \
-    batch_size=16 \
-    num_denoising_steps=128 \
-    temp=0.1 \
-    activate_nvib_noise=True
-
-python gidd/eval/generative_ppl.py \
-    samples_path="$CORRECT_N12_SAMPLES" \
-    model_tokenizer=gpt2 \
-    pretrained_model=google/gemma-2-9b \
-    batch_size=1 \
-    metrics_path="$CORRECT_N12_METRICS"
 
 # =========================================================
 # 6. Self correction 512
