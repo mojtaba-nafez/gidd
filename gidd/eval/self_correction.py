@@ -11,6 +11,7 @@ from gidd.utils import sample_categorical
 def correction_step(model, tokenizer, z_t, t, temp, tokens_per_step, latent_noise=False, activate_nvib_noise=False):
     logits = model(z_t, t, latent_noise=latent_noise, activate_nvib_noise=activate_nvib_noise)
     logits[..., tokenizer.mask_token_id] = -1e6
+    # logits[..., tokenizer.pad_token_id] *= 0.1 # -1e6
     p_t = (logits / temp).softmax(-1)
     # p_t.shape: torch.Size([1, 512, 50258])
     z_tm1 = sample_categorical(p_t)

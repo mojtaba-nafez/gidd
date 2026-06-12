@@ -50,8 +50,9 @@ class GiddSampler(Sampler):
             # t.shape:   torch.Size([1]) 
             # s.shape:   torch.Size([1])
             logits = self.model(z_t, t, use_trained_scaling_factor=True)
-            # logits.shape: torch.Size([1, 512, 50258])
+            # logits.shape: torch.Size([1, 512, 50258])            
             logits[..., self.tokenizer.mask_token_id] = -1e6
+            # logits[..., self.tokenizer.pad_token_id] = -1e6
 
             # if i > 0:
             q_s = self.noise_schedule.probs_at_t(logits.softmax(-1), s)
@@ -199,10 +200,11 @@ class MDLMSampler(Sampler):
 
 
 class AutoregressiveSampler(Sampler):
-    def __init__(self, model, tokenizer, noise_schedule: NoiseSchedule, compile_step=True):
+    def __init__(self, model, tokenizer, noise_schedule: NoiseSchedule, compile_step=True, temperature=1.0):
         super().__init__(model, tokenizer, noise_schedule)
         if compile_step:
             self.model = torch.compile(model)
+        self.temperature = temperature
 
     def _do_generate(self, num_samples, num_denoising_steps, max_length, show_progress=False, device=None):
         bos_token_id = self.tokenizer.cls_token_id or self.tokenizer.bos_token_id
@@ -216,7 +218,8 @@ class AutoregressiveSampler(Sampler):
         done = torch.zeros(num_samples, device=device)
         for i in tqdm.trange(1, max_length, desc="Generating samples", disable=not show_progress):
             logits = self.model(input_ids, use_cache=False).logits[:, i-1]
-            probs = logits.softmax(-1)
+            probs = (logits / self.temperature).softmax(-1)
+            # probs = logits.softmax(-1)
             next_x = (1 - done) * sample_categorical(probs) + done * self.tokenizer.pad_token_id
             input_ids[:, i] = next_x.to(input_ids.dtype)
             done += (1 - done) * (next_x == eos_token_id).to(done.dtype)
@@ -235,6 +238,7 @@ def get_sampler(config, model, tokenizer, noise_schedule: NoiseSchedule, compile
         else:
             raise ValueError(f"Unsupported forward process: {config.model.diffusion_process}")
     elif config.model.type == "autoregressive":
-        return AutoregressiveSampler(model, tokenizer, noise_schedule, compile_step=True)
+        temperature = getattr(config, "temperature", 1)
+        return AutoregressiveSampler(model, tokenizer, noise_schedule, compile_step=True, temperature=temperature)
     else:
         raise ValueError(f"Unsupported model type: {config.model.type}")

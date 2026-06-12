@@ -69,6 +69,24 @@ check /idiap/temp/mnafez/research/gidd/slurm/eval_slurm_script/ar_idiap.sh !
 ### NVIB: Our checkpoint  -- Temporal Runs
 
 
+python gidd/eval/generate_samples.py path="/idiap/temp/mnafez/research/gidd/our-pt-checkpoints/cscs-trained/pt-p-0.2-small-nvib-3-4-5-6-7-8" samples_path=samples.pt num_samples=32 num_denoising_steps=128 batch_size=16
 
 
+python gidd/eval/generative_ppl.py samples_path="samples.pt" model_tokenizer=gpt2 pretrained_model=google/gemma-2-9b batch_size=1 metrics_path=samples.json
 
+ python gidd/eval/entropy-analysis.py samples_path="samples.pt" model_tokenizer=gpt2 pretrained_model=google/gemma-2-9b batch_size=1 metrics_path=corrected_samples.json +entropy_sample_len_low_threshold=0 +entropy_sample_len_up_threshold=530
+
+----
+
+python gidd/eval/self_correction.py path="/idiap/temp/mnafez/research/gidd/our-pt-checkpoints/cscs-trained/pt-p-0.2-small-nvib-3-4-5-6-7-8" samples_path="samples.pt" corrected_samples_path="/idiap/temp/mnafez/research/gidd/baseline_correct.pt" batch_size=16 num_denoising_steps=128 temp=0.1  latent_noise=False activate_nvib_noise=True
+
+python gidd/eval/generative_ppl.py samples_path="/idiap/temp/mnafez/research/gidd/baseline_correct.pt" model_tokenizer=gpt2 pretrained_model=google/gemma-2-9b batch_size=1 metrics_path=baseline_correct.json
+
+
+python gidd/eval/entropy-analysis.py samples_path="/idiap/temp/mnafez/research/gidd/baseline_correct.pt" model_tokenizer=gpt2 pretrained_model=google/gemma-2-9b batch_size=1 metrics_path=corrected_samples.json +entropy_sample_len_low_threshold=0 +entropy_sample_len_up_threshold=530
+
+====
+
+python gidd/eval/self_correction.py path="/idiap/temp/mnafez/research/gidd/our-pt-checkpoints/cscs-trained/pt-p-0.2-small-13-block" samples_path="samples.pt" corrected_samples_path="/idiap/temp/mnafez/research/gidd/baseline_correct2.pt" batch_size=16 num_denoising_steps=128 temp=0.1  latent_noise=False activate_nvib_noise=False
+
+python gidd/eval/generative_ppl.py samples_path="/idiap/temp/mnafez/research/gidd/baseline_correct2.pt" model_tokenizer=gpt2 pretrained_model=google/gemma-2-9b batch_size=1 metrics_path=baseline_correct2.json
