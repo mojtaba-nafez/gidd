@@ -40,8 +40,9 @@ sbatch --environment=gidd  -A a0236 slurm/training_scripts_slurm/main_cscs.sh \
 
 ```
 sbatch --environment=gidd --job-name=ar_baseline  -A a0236 slurm/training_scripts_slurm/main_cscs.sh \
-  config_name=ar \
+  --config ar \
   logging.run_name=ar-baseline model=small \
+  +model.nvib_layers=[] \
   training.num_train_steps=125000 model=small model.n_blocks=11
 ```
 

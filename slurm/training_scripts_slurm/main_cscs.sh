@@ -97,7 +97,8 @@ else
 fi
 
 echo "Using training entry: $TRAIN_ENTRY"
-
+echo "CONFIG_NAME: $CONFIG_NAME"
+echo "@: $@"
 ############################
 # RUN
 ############################
