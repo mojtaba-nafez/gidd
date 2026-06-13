@@ -203,7 +203,9 @@ def main(config):
 
     if config.training.resume is not None:
         load_rng_state(config.training.resume, global_rank)
-
+    
+    MAX_RUNTIME = getattr(config, "MAX_RUNTIME", 220000000 * 60 * 60)
+    
     with tqdm.tqdm(total=config.training.num_train_steps, initial=state.step, desc="Training", dynamic_ncols=True, disable=not is_main_process) as pbar:
         for step in range(state.step, config.training.num_train_steps):
                 
@@ -334,6 +336,13 @@ def main(config):
                 dist.barrier()
 
             pbar.update(1)
+            
+            elapsed = time.time() - state.start_time
+            if elapsed > MAX_RUNTIME and ((step + 1) % config.logging.save_freq == 0):
+                print("22 hour limit reached, exiting after checkpoint.")
+                if is_distributed:
+                    dist.barrier()
+                break
 
     if is_distributed:
         dist.destroy_process_group()

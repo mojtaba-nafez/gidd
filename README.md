@@ -56,7 +56,34 @@ sbatch --environment=gidd  -A a0236 slurm/training_scripts_slurm/main_cscs.sh \
   training.num_train_steps=125000 model=small
 ```
 
+```
+sbatch --environment=gidd -A a0236   -p low   --qos=normal --time=0-23:00:00 slurm/training_scripts_slurm/main_cscs.sh \
+  model.p_uniform=0.2 \
+  model.nvib_layers=[3,4,5,6,7,8] \
+  logging.run_name=small-nvib-gidd+-owt-pu0.2 model=small \
+  training.num_train_steps=914285 model=small +MAX_RUNTIME=79200
+```
 
+Next:
+```
+sbatch --environment=gidd -A a0236 --time=0-23:00:00 slurm/training_scripts_slurm/main_cscs.sh \
+  model.p_uniform=0.2 \
+  model.nvib_layers=[3,4,5,6,7,8] \
+  logging.run_name=small-nvib-gidd+-owt-pu0.2 model=small \
+  training.num_train_steps=914285 model=small training.resume="..../checkpoints/latest" +MAX_RUNTIME=79200
+```
+
+----
+
+
+```
+sbatch --environment=gidd --nodes=2 -A a0236 --time=0-12:00:00 slurm/training_scripts_slurm/main_cscs_long_train.sh \
+  --gpus_per_node 4 --nodes 2 \
+  model.p_uniform=0.2 \
+  model.nvib_layers=[3,4,5,6,7,8] \
+  logging.run_name=small-nvib-gidd+-owt-pu0.2 model=small \
+  training.num_train_steps=457142 model=small +MAX_RUNTIME=41400
+```
 
 # Evaluation
 

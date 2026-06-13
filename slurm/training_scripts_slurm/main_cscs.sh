@@ -87,7 +87,7 @@ export PYTHONPATH="$SLURM_SUBMIT_DIR:${PYTHONPATH:-}"
 ############################
 
 if [[ -f "train.py" ]]; then
-  ट्रेन_ENTRY="train.py"
+  TRAIN_ENTRY="train.py"
 elif [[ -f "gidd/train.py" ]]; then
   TRAIN_ENTRY="gidd/train.py"
 else
