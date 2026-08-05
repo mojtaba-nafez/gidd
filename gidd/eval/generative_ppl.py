@@ -136,19 +136,27 @@ def main(args):
 
     json.dumps(metrics, indent=4)
     print("=== RESULTS ===")
-    print(",".join(map(str, [
-        metrics["file"],
-        metrics["pretrained_model"],
-        metrics["median_nll"],
-        metrics["avg_nll"],
-        metrics["ppl"],
-        metrics["acc"],
-        metrics["tokens"],
-        metrics["unigram_entropy"],
-        metrics["distinct_1"],
-        metrics["unigram_entropy_per_sample"],
+    print("\n".join(map(str, [
+        f"ppl={metrics['ppl']}",
+        f"acc={metrics['acc']}",
+        f"unigram_entropy={metrics['unigram_entropy']}",
+        f"unigram_entropy_per_sample={metrics['unigram_entropy_per_sample']}",
     ])))
     print("===============")
+    # print("=== RESULTS ===")
+    # print(",".join(map(str, [
+    #     metrics["file"],
+    #     metrics["pretrained_model"],
+    #     metrics["median_nll"],
+    #     metrics["avg_nll"],
+    #     metrics["ppl"],
+    #     metrics["acc"],
+    #     metrics["tokens"],
+    #     metrics["unigram_entropy"],
+    #     metrics["distinct_1"],
+    #     metrics["unigram_entropy_per_sample"],
+    # ])))
+    # print("===============")
 
     with open(hydra.utils.to_absolute_path(args.metrics_path), "w") as f:
         json.dump(metrics, f)

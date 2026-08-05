@@ -69,8 +69,7 @@ check /idiap/temp/mnafez/research/gidd/slurm/eval_slurm_script/ar_idiap.sh !
 ### NVIB: Our checkpoint  -- Temporal Runs
 
 
-python gidd/eval/generate_samples.py path="/idiap/temp/mnafez/research/gidd/our-pt-checkpoints/cscs-trained/pt-p-0.2-small-nvib-3-4-5-6-7-8" samples_path=samples.pt num_samples=32 num_denoising_steps=128 batch_size=16
-
+python gidd/eval/generate_samples.py path="/idiap/temp/mnafez/research/gidd/our-pt-checkpoints/cscs-trained/nvib3-4-5-6-7-8-131B/part1" samples_path=samples.pt num_samples=32 num_denoising_steps=128 batch_size=16
 
 python gidd/eval/generative_ppl.py samples_path="samples.pt" model_tokenizer=gpt2 pretrained_model=google/gemma-2-9b batch_size=1 metrics_path=samples.json
 
@@ -78,7 +77,7 @@ python gidd/eval/generative_ppl.py samples_path="samples.pt" model_tokenizer=gpt
 
 ----
 
-python gidd/eval/self_correction.py path="/idiap/temp/mnafez/research/gidd/our-pt-checkpoints/cscs-trained/pt-p-0.2-small-nvib-3-4-5-6-7-8" samples_path="samples.pt" corrected_samples_path="/idiap/temp/mnafez/research/gidd/baseline_correct.pt" batch_size=16 num_denoising_steps=128 temp=0.1  latent_noise=False activate_nvib_noise=True
+python gidd/eval/self_correction.py path="/idiap/temp/mnafez/research/gidd/our-pt-checkpoints/cscs-trained/nvib3-4-5-6-7-8-131B/part1" samples_path="samples.pt" corrected_samples_path="/idiap/temp/mnafez/research/gidd/baseline_correct.pt" batch_size=16 num_denoising_steps=128 temp=0.1  latent_noise=False activate_nvib_noise=True
 
 python gidd/eval/generative_ppl.py samples_path="/idiap/temp/mnafez/research/gidd/baseline_correct.pt" model_tokenizer=gpt2 pretrained_model=google/gemma-2-9b batch_size=1 metrics_path=baseline_correct.json
 
@@ -90,3 +89,51 @@ python gidd/eval/entropy-analysis.py samples_path="/idiap/temp/mnafez/research/g
 python gidd/eval/self_correction.py path="/idiap/temp/mnafez/research/gidd/our-pt-checkpoints/cscs-trained/pt-p-0.2-small-13-block" samples_path="samples.pt" corrected_samples_path="/idiap/temp/mnafez/research/gidd/baseline_correct2.pt" batch_size=16 num_denoising_steps=128 temp=0.1  latent_noise=False activate_nvib_noise=False
 
 python gidd/eval/generative_ppl.py samples_path="/idiap/temp/mnafez/research/gidd/baseline_correct2.pt" model_tokenizer=gpt2 pretrained_model=google/gemma-2-9b batch_size=1 metrics_path=baseline_correct2.json
+
+
+
+
+-------------
+
+
+
+
+python gidd/eval/generate_samples.py path="/idiap/temp/mnafez/research/gidd/our-pt-checkpoints/cscs-trained/pt-p-0.2-small" samples_path="/idiap/temp/mnafez/research/gidd/samples.pt" num_samples=32 num_denoising_steps=128 batch_size=16
+
+
+python gidd/eval/self_correction.py path="/idiap/temp/mnafez/research/gidd/our-pt-checkpoints/cscs-trained/pt-p-0.2-small" samples_path="/idiap/temp/mnafez/research/gidd/samples.pt " corrected_samples_path="/idiap/temp/mnafez/research/gidd/baseline_correct.pt" batch_size=16 num_denoising_steps=128 temp=0.5  latent_noise=False activate_nvib_noise=True
+
+
+python gidd/eval/generative_ppl.py samples_path="/idiap/temp/mnafez/research/gidd/baseline_correct.pt" model_tokenizer=gpt2 pretrained_model=google/gemma-2-9b batch_size=1 metrics_path=samples.json
+
+
+python gidd/eval/generative_ppl.py samples_path="/idiap/temp/mnafez/research/gidd/baseline_correct.pt" model_tokenizer=gpt2 pretrained_model=openai-community/gpt2-large batch_size=1 metrics_path=samples.json
+
+=====
+
+python random_word_bench.py path="/idiap/temp/mnafez/research/gidd/our-pt-checkpoints/cscs-trained/pt-p-0.2-small"  batch_size=16 num_denoising_steps=128 temp=0.5  latent_noise=False activate_nvib_noise=False
+
+=======
+
+
+
+python gidd/eval/generate_samples.py path="/idiap/temp/mnafez/research/gidd/our-pt-checkpoints/cscs-trained/pt-p-0.2-small" samples_path="/idiap/temp/mnafez/research/gidd/samples.pt" num_samples=32 num_denoising_steps=128 batch_size=16
+
+
+python gidd/eval/self_correction.py path="/idiap/temp/mnafez/research/gidd/our-pt-checkpoints/cscs-trained/pt-p-0.2-small" samples_path="/idiap/temp/mnafez/research/gidd/samples.pt " corrected_samples_path="/idiap/temp/mnafez/research/gidd/baseline_correct.pt" batch_size=16 num_denoising_steps=128 temp=0.1  latent_noise=False activate_nvib_noise=False
+
+
+python gidd/eval/generative_ppl.py samples_path="/idiap/temp/mnafez/research/gidd/baseline_correct.pt" model_tokenizer=gpt2 pretrained_model=google/gemma-2-9b batch_size=1 metrics_path=samples.json
+
+====
+
+
+python gidd/eval/generate_samples.py path="/idiap/temp/mnafez/research/gidd/our-pt-checkpoints/cscs-trained/pt-p-0.2-small-nvib" samples_path="/idiap/temp/mnafez/research/gidd/samples1.pt" num_samples=32 num_denoising_steps=128 batch_size=16
+
+
+python gidd/eval/self_correction.py path="/idiap/temp/mnafez/research/gidd/our-pt-checkpoints/cscs-trained/pt-p-0.2-small-nvib" samples_path="/idiap/temp/mnafez/research/gidd/samples1.pt " corrected_samples_path="/idiap/temp/mnafez/research/gidd/baseline_correct.pt" batch_size=16 num_denoising_steps=32 temp=0.1  latent_noise=False activate_nvib_noise=True
+
+
+python gidd/eval/generative_ppl.py samples_path="/idiap/temp/mnafez/research/gidd/baseline_correct.pt" model_tokenizer=gpt2 pretrained_model=google/gemma-2-9b batch_size=1 metrics_path=samples.json
+
+

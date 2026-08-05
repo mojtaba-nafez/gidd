@@ -225,7 +225,7 @@ class LabelEmbedder(nn.Module):
 
 
 class DDiTBlock(nn.Module):
-  def __init__(self, dim, n_heads, cond_dim, mlp_ratio=4, dropout=0.1):
+  def __init__(self, dim, n_heads, cond_dim, mlp_ratio=4, dropout=0.1, layer_num=-1):
     super().__init__()
     self.n_heads = n_heads
     self.dim = dim
@@ -248,6 +248,7 @@ class DDiTBlock(nn.Module):
     self.adaLN_modulation = nn.Linear(cond_dim, 6 * dim, bias=True)
     self.adaLN_modulation.weight.data.zero_()
     self.adaLN_modulation.bias.data.zero_()
+    self.layer_num = layer_num
 
   def flops(self, seq_len=128):
     per_token_flops = 0
@@ -299,8 +300,18 @@ class DDiTBlock(nn.Module):
         qkv, cu_seqlens, seq_len, 0., causal=False)
       x = rearrange(x, '(b s) h d -> b s (h d)', b=batch_size)
     else:
+      '''
+      q, k, v = qkv[:, :, 0].transpose(1, 2), qkv[:, :, 1].transpose(1, 2), qkv[:, :, 2].transpose(1, 2)
+      seq_len = q.shape[-2]
+      attn_mask = torch.zeros( (seq_len, seq_len), device=q.device, dtype=q.dtype,)
+      if self.layer_num > -1:
+        attn_mask.fill_diagonal_(torch.finfo(q.dtype).min)
+      x = F.scaled_dot_product_attention(q, k, v, attn_mask=attn_mask, dropout_p=0.0, is_causal=False,)
+
+      '''
       q, k, v = qkv[:, :, 0].transpose(1, 2), qkv[:, :, 1].transpose(1, 2), qkv[:, :, 2].transpose(1, 2)
       x = F.scaled_dot_product_attention(q, k, v)
+      
       
       x = rearrange(x, 'b h s d -> b s (h d)', b=batch_size)
 
@@ -385,7 +396,7 @@ class DIT(nn.Module, huggingface_hub.PyTorchModelHubMixin):
         blocks.append(DDiTBlock(config.model.hidden_size,
                                 config.model.n_heads,
                                 config.model.cond_dim,
-                                dropout=config.model.dropout))
+                                dropout=config.model.dropout, layer_num=i))
                                 
     self.blocks = nn.ModuleList(blocks)
 
@@ -407,6 +418,20 @@ class DIT(nn.Module, huggingface_hub.PyTorchModelHubMixin):
 
   def forward(self, indices, sigma, kl_loss=False, latent_noise=False, use_trained_scaling_factor=False, activate_nvib_noise=False):
     x = self.vocab_embed(indices)
+
+    '''
+    mask_id = 50257
+    mask_weight = 0.2
+    mask_embedding_blending = True
+    if mask_embedding_blending:
+        not_already_masked = (indices != mask_id).unsqueeze(-1)
+        mask_token_emb = self.vocab_embed([mask_id])
+        mixed_x = ((1 - mask_weight) * x) + (mask_weight * mask_token_emb.view(1, 1, -1))
+        x = mixed_x
+        # x = torch.where(not_already_masked, mixed_x, x)
+    '''
+
+
     c = F.silu(self.sigma_map(sigma))
 
     rotary_cos_sin = self.rotary_emb(x)

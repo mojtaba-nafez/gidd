@@ -19,3 +19,5 @@ sbatch -p gpu -A balm /idiap/temp/mnafez/research/gidd/slurm/eval_slurm_script/b
 ```
 sbatch -p gpu -A balm /idiap/temp/mnafez/research/gidd/slurm/eval_slurm_script/ar_idiap.sh
 ```
+
+# Pareto Plot Experiments
