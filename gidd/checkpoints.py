@@ -14,7 +14,7 @@ from gidd.modeling import get_model
 from gidd.trainer import DiffusionTrainer, get_trainer
 from gidd.loss import get_loss
 from gidd.optimizer import get_optimizer
-
+import os
 
 @dataclass
 class TrainingState:
@@ -108,6 +108,9 @@ def save_rng_state(path: Path, rank: int):
 
 
 def load_rng_state(path: Path, rank: int):
+    # torch.cuda.set_device(rank)
+    # local_rank = int(os.environ.get("LOCAL_RANK", 0))
+    # torch.cuda.set_device(local_rank)
     torch.cuda.set_device(rank)
     rng_state_dict = torch.load(Path(path, f'rng_state_{rank}.pt'), map_location='cpu', weights_only=False)
     torch.set_rng_state(rng_state_dict['cpu_rng_state'])

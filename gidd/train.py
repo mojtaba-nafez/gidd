@@ -202,7 +202,8 @@ def main(config):
     log_buffer = []
 
     if config.training.resume is not None:
-        load_rng_state(config.training.resume, global_rank)
+        load_rng_state(config.training.resume, local_rank)
+        # load_rng_state(config.training.resume, global_rank)
     
     MAX_RUNTIME = getattr(config, "MAX_RUNTIME", 220000000 * 60 * 60)
     

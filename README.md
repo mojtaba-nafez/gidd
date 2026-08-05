@@ -82,7 +82,7 @@ sbatch --environment=gidd --nodes=2 -A a0236 --time=0-12:00:00 slurm/training_sc
   model.p_uniform=0.2 \
   model.nvib_layers=[3,4,5,6,7,8] \
   logging.run_name=small-nvib-gidd+-owt-pu0.2 model=small \
-  training.num_train_steps=457142 model=small +MAX_RUNTIME=41400
+  training.num_train_steps=457142 model=small +MAX_RUNTIME=41400 training.resume="/mnt/home/NLU/gidd/outputs/2026-06-13/11-52-16/checkpoints/latest"
 ```
 
 # Evaluation
