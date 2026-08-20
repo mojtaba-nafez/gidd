@@ -137,7 +137,7 @@ class LayerNorm(nn.Module):
 
 
 class DDiT_NVIBBlock(nn.Module):
-  def __init__(self, dim, n_heads, cond_dim, mlp_ratio=4, dropout=0.1):
+  def __init__(self, dim, n_heads, cond_dim, mlp_ratio=4, dropout=0.1, layer_num=-1):
     super().__init__()
     self.n_heads = n_heads
     self.dim = dim
@@ -192,6 +192,8 @@ class DDiT_NVIBBlock(nn.Module):
     self.kl_gaussian = None
     self.kl_dirichlet = None
 
+    self.layer_num = layer_num
+
   def _get_bias_dropout_scale(self):
     if self.training:
       return bias_dropout_add_scale_fused_train
@@ -199,7 +201,7 @@ class DDiT_NVIBBlock(nn.Module):
       return bias_dropout_add_scale_fused_inference
 
 
-  def forward(self, x, rotary_cos_sin, c, seqlens=None, kl_loss=False, use_trained_scaling_factor=False, activate_nvib_noise=False):
+  def forward(self, x, rotary_cos_sin, c, seqlens=None, kl_loss=False, use_trained_scaling_factor=False, activate_nvib_noise=False, rm_self_attention=False):
     # print(self.training)
     batch_size, seq_len = x.shape[0], x.shape[1]
 
@@ -278,6 +280,13 @@ class DDiT_NVIBBlock(nn.Module):
     scale_factor = 1.0 / (2.0 * math.sqrt(self.head_dim))
 
     attn_weights = attn_weights + log_pi - (scale_factor * l2_norm * exp_scale)
+
+    # Remove self-attention: query i cannot attend to sequence key i.
+    # key index 0 is the prior, so sequence token i is at key index i+1.
+    if rm_self_attention and self.layer_num > 6:
+        idx = torch.arange(seq_len, device=attn_weights.device)
+        attn_weights[:, :, idx, idx + 1] = torch.finfo(attn_weights.dtype).min
+
 
     attn_weights = F.softmax(attn_weights, dim=-1, dtype=torch.float32).to(query_states.dtype)
     attn_weights = F.dropout(attn_weights, p=self.attention_dropout, training=self.training)

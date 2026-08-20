@@ -32,7 +32,7 @@ def get_lr(config, lr, step):
     else:
         raise ValueError(f"Unknown learning rate schedule: {lr_schedule}")
 
-
+@torch.compiler.disable
 @torch.no_grad()
 def sample_categorical(probs, generator=None):
     # return torch.distributions.Categorical(probs=probs).sample()

@@ -23,15 +23,17 @@ def correction_step_original(model, tokenizer, z_t, t, temp, tokens_per_step, la
     acc = (z_tm1 == logits.argmax(-1)).float().mean().item()
     return z_tm1, acc
 
-
-def correction_step(model, tokenizer, z_t, t, temp, tokens_per_step=1, latent_noise=False, activate_nvib_noise=False, use_trained_scaling_factor=False, rm_self_attention=False):
-    """Temperature-decoupled self-correction. Position selection uses raw-logit disagreement
-    (best_logit - current_logit), so temperature never affects which position is picked — only
-    the replacement token sampling. The current token is excluded from the replacement
-    distribution, so a stochastic no-op can't be mistaken for convergence."""
+def correction_step(model, tokenizer, z_t, t, temp, tokens_per_step=1, step=0, rand_tokens_per_step=1, latent_noise=False, activate_nvib_noise=False, use_trained_scaling_factor=False, rm_self_attention=False):
+    """Hybrid self-correction step:
+    1. Logit-based Correction: Picks `tokens_per_step` positions where the model disagrees 
+       most with `z_t` and resamples tokens using temperature-scaled model logits.
+    2. Random Perturbation: Picks `rand_tokens_per_step` additional valid positions completely 
+       at random and replaces them with uniform tokens from the vocabulary.
+    """
     if temp <= 0:
         raise ValueError(f"Temperature must be > 0, got {temp}")
 
+    # --- Step 1: Model Forward Pass & Logit Evaluation ---
     logits = model(z_t, t, latent_noise=latent_noise, activate_nvib_noise=activate_nvib_noise, use_trained_scaling_factor=use_trained_scaling_factor, rm_self_attention=rm_self_attention)
     logits = logits.clone()
     logits[..., tokenizer.mask_token_id] = -torch.inf
@@ -43,47 +45,87 @@ def correction_step(model, tokenizer, z_t, t, temp, tokens_per_step=1, latent_no
     current_logits = logits.gather(-1, z_t.unsqueeze(-1)).squeeze(-1)
     margin = best_logits - current_logits
 
-    correctable = pred_tokens != z_t
+    # Base valid mask for non-pad, non-mask tokens
+    valid_mask = torch.ones_like(z_t, dtype=torch.bool)
     if tokenizer.pad_token_id is not None:
-        correctable = correctable & (z_t != tokenizer.pad_token_id)
-    correctable = correctable & (z_t != tokenizer.mask_token_id)
+        valid_mask = valid_mask & (z_t != tokenizer.pad_token_id)
+    valid_mask = valid_mask & (z_t != tokenizer.mask_token_id)
 
-    score = margin.masked_fill(~correctable, -torch.inf)
+    correctable = (pred_tokens != z_t) & valid_mask
     num_correctable = correctable.sum().item()
 
-    if num_correctable == 0:
+    z_next = z_t.clone()
+    total_changed = 0
+    mean_margin = 0.0
+
+    # --- Step 2: Logit-Based Correction ---
+    logit_selected_ids = None
+    if num_correctable > 0 and tokens_per_step > 0:
+        score = margin.masked_fill(~correctable, -torch.inf)
+        k_logit = min(int(tokens_per_step), z_t.shape[-1], int(num_correctable))
+        top_scores, logit_selected_ids = torch.topk(score, k=k_logit, dim=-1)
+        valid_logit = torch.isfinite(top_scores)
+
+        vocab_size = logits.shape[-1]
+        selected_logits = logits.gather(1, logit_selected_ids.unsqueeze(-1).expand(-1, -1, vocab_size)).clone()
+        current_selected = z_t.gather(-1, logit_selected_ids)
+
+        # Block re-sampling the current token
+        selected_logits.scatter_(-1, current_selected.unsqueeze(-1), -torch.inf)
+
+        selected_probs = torch.softmax(selected_logits.float() / temp, dim=-1)
+        sampled_tokens = sample_categorical(selected_probs)
+        sampled_tokens = torch.where(valid_logit, sampled_tokens, current_selected)
+
+        z_next = z_next.scatter(-1, logit_selected_ids, sampled_tokens)
+        changed_logit = valid_logit & (sampled_tokens != current_selected)
+        total_changed += changed_logit.sum().item()
+
+        valid_scores = top_scores[valid_logit]
+        mean_margin = valid_scores.mean().item() if valid_scores.numel() > 0 else 0.0
+
+    # --- Step 3: Random Replacement ---
+    if rand_tokens_per_step > 0:
+        rand_valid_mask = valid_mask.clone()
+        # Exclude positions already updated by the logit-based correction step
+        if logit_selected_ids is not None:
+            rand_valid_mask.scatter_(-1, logit_selected_ids, False)
+
+        num_rand_valid = rand_valid_mask.sum().item()
+        if num_rand_valid > 0:
+            k_rand = min(int(rand_tokens_per_step), z_t.shape[-1], int(num_rand_valid))
+
+            # Assign random keys to valid positions and pick top-k
+            rand_keys = torch.rand_like(z_t, dtype=torch.float32)
+            rand_keys = rand_keys.masked_fill(~rand_valid_mask, -1.0)
+            _, rand_ids = torch.topk(rand_keys, k=k_rand, dim=-1)
+
+            vocab_size = logits.shape[-1]
+            random_sampled_tokens = torch.randint(0, vocab_size, size=rand_ids.shape, device=z_t.device, dtype=z_t.dtype)
+
+            current_rand_selected = z_next.gather(-1, rand_ids)
+            z_next = z_next.scatter(-1, rand_ids, random_sampled_tokens)
+
+            changed_rand = (random_sampled_tokens != current_rand_selected)
+            total_changed += changed_rand.sum().item()
+
+    has_correctable = (num_correctable > 0) or (rand_tokens_per_step > 0 and valid_mask.sum().item() > 0)
+
+    if not has_correctable:
         return {
             "z_next": z_t.clone(), "self_acc": self_acc, "num_changed": 0,
             "num_correctable": 0, "has_correctable": False, "mean_margin": 0.0,
             "status": "fixed_point",
         }
 
-    k = min(int(tokens_per_step), z_t.shape[-1], int(num_correctable))
-    top_scores, ids = torch.topk(score, k=k, dim=-1)
-    valid = torch.isfinite(top_scores)
-
-    vocab_size = logits.shape[-1]
-    selected_logits = logits.gather(1, ids.unsqueeze(-1).expand(-1, -1, vocab_size)).clone()
-    current_selected = z_t.gather(-1, ids)
-
-    # Position is already known to disagree with model argmax — block re-sampling the current token
-    selected_logits.scatter_(-1, current_selected.unsqueeze(-1), -torch.inf)
-
-    selected_probs = torch.softmax(selected_logits.float() / temp, dim=-1)
-    sampled_tokens = sample_categorical(selected_probs)
-    sampled_tokens = torch.where(valid, sampled_tokens, current_selected)
-
-    z_next = z_t.scatter(-1, ids, sampled_tokens)
-    changed = valid & (sampled_tokens != current_selected)
-    num_changed = changed.sum().item()
-
-    valid_scores = top_scores[valid]
-    mean_margin = valid_scores.mean().item() if valid_scores.numel() > 0 else 0.0
-
     return {
-        "z_next": z_next, "self_acc": self_acc, "num_changed": num_changed,
-        "num_correctable": num_correctable, "has_correctable": True, "mean_margin": mean_margin,
-        "status": "changed" if num_changed > 0 else "no_op",
+        "z_next": z_next, 
+        "self_acc": self_acc, 
+        "num_changed": total_changed,
+        "num_correctable": num_correctable, 
+        "has_correctable": True, 
+        "mean_margin": mean_margin,
+        "status": "changed" if total_changed > 0 else "no_op",
     }
 
 
@@ -209,7 +251,7 @@ def main(args):
         for i in range(args.num_denoising_steps):
             with torch.no_grad(), torch.autocast(device_type=device.type, dtype=dtype):
                 out = correction_step(model=model, tokenizer=tokenizer, z_t=z_t, t=t, temp=args.temp,
-                                       tokens_per_step=args.tokens_per_step, **model_kwargs)
+                                       tokens_per_step=args.tokens_per_step, rand_tokens_per_step=args.rand_tokens_per_step, step=i, **model_kwargs)
 
             z_t_next = out["z_next"]
             acc = out["self_acc"]

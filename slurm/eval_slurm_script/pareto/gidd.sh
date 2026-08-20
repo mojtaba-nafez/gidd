@@ -63,7 +63,7 @@ echo "NVCC: $(command -v nvcc || echo 'not found')"
 
 
 python gidd/eval/generate_samples.py path="$CHECKPOINT_PATH" \
-    samples_path="${OUTPUT_DIR}/base_samples_${CHECKPOINT_NAME}.pt" num_samples=1024 num_denoising_steps=128 batch_size=16
+    samples_path="${OUTPUT_DIR}/base_samples_${CHECKPOINT_NAME}.pt" num_samples=1024 num_denoising_steps=128 batch_size=32
 
 TEMPS=(0.05 0.1 0.3 0.5 1.0)
 DENOISING_STEPS=(32 64 128 256 384 512)
@@ -80,7 +80,7 @@ for TEMP in "${TEMPS[@]}"; do
             path="$CHECKPOINT_PATH" \
             samples_path="${OUTPUT_DIR}/base_samples_${CHECKPOINT_NAME}.pt" \
             corrected_samples_path="$CORRECTED_PATH" \
-            batch_size=16 \
+            batch_size=32 \
             num_denoising_steps="$NUM_DENOISING_STEPS" \
             temp="$TEMP" \
             latent_noise="$LATENT_NOISE" \
@@ -90,7 +90,7 @@ for TEMP in "${TEMPS[@]}"; do
             samples_path="$CORRECTED_PATH" \
             model_tokenizer=gpt2 \
             pretrained_model=google/gemma-2-9b \
-            batch_size=1 \
+            batch_size=4 \
             metrics_path="$METRICS_PATH"
 
     done

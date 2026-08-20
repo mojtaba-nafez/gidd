@@ -37,19 +37,20 @@ class Sampler(nn.Module):
 
 class GiddSampler(Sampler):
     class DenoisingStep(nn.Module):
-        def __init__(self, model, noise_schedule, tokenizer, min_p=0.0):
+        def __init__(self, model, noise_schedule, tokenizer, min_p=0.0, rm_self_attention=False):
             super().__init__()
             self.model = model
             self.noise_schedule = noise_schedule
             self.tokenizer = tokenizer
             self.min_p = min_p
+            self.rm_self_attention = rm_self_attention
 
         def forward(self, z_t, t, s):
             # t: more mask  ---  s: less mask
             # z_t.shape: torch.Size([1, 512])
             # t.shape:   torch.Size([1]) 
             # s.shape:   torch.Size([1])
-            logits = self.model(z_t, t, use_trained_scaling_factor=True)
+            logits = self.model(z_t, t, use_trained_scaling_factor=True, rm_self_attention=self.rm_self_attention)
             # logits.shape: torch.Size([1, 512, 50258])            
             logits[..., self.tokenizer.mask_token_id] = -1e6
             # logits[..., self.tokenizer.pad_token_id] = -1e6
@@ -91,9 +92,10 @@ class GiddSampler(Sampler):
                 q_st = q_st / q_st.sum(-1, keepdim=True)
             return sample_categorical(q_st)
 
-    def __init__(self, model, tokenizer, noise_schedule: NoiseSchedule, t_eps=1e-4, compile_step=True, min_p=0.0):
+    def __init__(self, model, tokenizer, noise_schedule: NoiseSchedule, t_eps=1e-4, compile_step=True, min_p=0.0, rm_self_attention=False):
         super().__init__(model, tokenizer, noise_schedule, t_eps=t_eps)
-        self.sampling_step = self.DenoisingStep(model, noise_schedule, tokenizer, min_p=min_p)
+        self.rm_self_attention = rm_self_attention
+        self.sampling_step = self.DenoisingStep(model, noise_schedule, tokenizer, min_p=min_p, rm_self_attention=self.rm_self_attention)
         if compile_step:
             self.sampling_step = torch.compile(self.sampling_step)
 
@@ -205,6 +207,7 @@ class AutoregressiveSampler(Sampler):
         if compile_step:
             self.model = torch.compile(model)
         self.temperature = temperature
+        print(f"AutoregressiveSampler: temperature={self.temperature}")
 
     def _do_generate(self, num_samples, num_denoising_steps, max_length, show_progress=False, device=None):
         bos_token_id = self.tokenizer.cls_token_id or self.tokenizer.bos_token_id
@@ -229,16 +232,16 @@ class AutoregressiveSampler(Sampler):
         return input_ids
 
 
-def get_sampler(config, model, tokenizer, noise_schedule: NoiseSchedule, compile_step=True, min_p=0.0):
+def get_sampler(config, model, tokenizer, noise_schedule: NoiseSchedule, compile_step=True, min_p=0.0, temperature=1.0, rm_self_attention=False):
     if config.model.type == "diffusion":
         if config.model.diffusion_process == "gidd":
-            return GiddSampler(model, tokenizer, noise_schedule, t_eps=config.model.t_eps, compile_step=compile_step, min_p=min_p)
+            return GiddSampler(model, tokenizer, noise_schedule, t_eps=config.model.t_eps, compile_step=compile_step, min_p=min_p, rm_self_attention=rm_self_attention)
         elif config.model.diffusion_process == "mdlm":
             return MDLMSampler(model, tokenizer, noise_schedule, t_eps=config.model.t_eps, compile_step=compile_step, min_p=min_p)
         else:
             raise ValueError(f"Unsupported forward process: {config.model.diffusion_process}")
     elif config.model.type == "autoregressive":
-        temperature = getattr(config, "temperature", 1)
+        # temperature = getattr(config, "temperature", 1)
         return AutoregressiveSampler(model, tokenizer, noise_schedule, compile_step=True, temperature=temperature)
     else:
         raise ValueError(f"Unsupported model type: {config.model.type}")

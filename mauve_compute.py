@@ -1,3 +1,6 @@
+'''
+python mauve_compute.py samples_path="/idiap/temp/mnafez/research/gidd/baseline_correct.pt" model_tokenizer=gpt2 pretrained_model=google/gemma-2-9b batch_size=8 metrics_path=samples.json
+'''
 import json
 from pathlib import Path
 
@@ -7,9 +10,11 @@ import tqdm
 import torch
 import torch.nn.functional as F
 from transformers import AutoModelForCausalLM, AutoTokenizer
-# from transformers import GPT2TokenizerFast
 from collections import Counter
 import math
+from gidd.data import get_dataloaders
+import mauve
+import os
 
 def empirical_entropy(items):
     counts = Counter(items)
@@ -40,39 +45,70 @@ def distinct_n(items):
         return 0.0
     return len(set(items)) / len(items)
 
-@hydra.main(config_path="../configs", config_name="gen_ppl", version_base="1.1")
+@hydra.main(config_path="gidd/configs", config_name="gen_ppl", version_base="1.1")
 def main(args):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    torch.set_float32_matmul_precision('high')
+    torch.set_float32_matmul_precision("high")
     torch.set_grad_enabled(False)
-
-    model_tokenizer = AutoTokenizer.from_pretrained(args.model_tokenizer)
-
-    print(f"Loding model {args.pretrained_model}")
-
-    model = AutoModelForCausalLM.from_pretrained(args.pretrained_model, device_map="auto")
-    tokenizer = AutoTokenizer.from_pretrained(args.pretrained_model)
-    if tokenizer.pad_token_id is None:
-        tokenizer.pad_token = tokenizer.eos_token
-    if args.torch_compile:
-        model = torch.compile(model)
-
+    tokenizer = AutoTokenizer.from_pretrained(args.model_tokenizer)
+    # Load generated token IDs
     samples_path = hydra.utils.to_absolute_path(args.samples_path)
     z_ts = torch.load(samples_path, weights_only=True)
-    # fix for bug in self-correct script:
-    if z_ts.shape[1] == 1:
+    # Fix extra singleton dimension from self-correct script
+    if z_ts.ndim == 3 and z_ts.shape[1] == 1:
         z_ts = z_ts.squeeze(1)
-    texts = model_tokenizer.batch_decode(z_ts, skip_special_tokens=True)
-    # Diversity metrics over generated samples.
-    # Use the same tokenizer that produced the samples, so the entropy is comparable
-    # across runs that use the same generation tokenizer.
-    generated_token_ids = []
-    samples_generated_token_ids = []
-    for text in texts:
-        token_ids = model_tokenizer.encode(text, add_special_tokens=False)
-        generated_token_ids.extend(token_ids)
-        samples_generated_token_ids.append(token_ids)
+    print("z_ts.shape:", z_ts.shape)
+    # Token IDs -> text
+    generated_texts = tokenizer.batch_decode(
+        z_ts.cpu().tolist(),
+        skip_special_tokens=True,
+    )
+    # Load human references
+    _, test_dl = get_dataloaders(args, tokenizer)
+    print(f"Loaded test dataloader with {len(test_dl.dataset)} samples")
+    human_ids = torch.tensor(
+        test_dl.dataset[:len(generated_texts)]["input_ids"]
+    )
+    print("human_references.shape:", human_ids.shape)
+    # Token IDs -> text
+    human_texts = tokenizer.batch_decode(
+        human_ids.tolist(),
+        skip_special_tokens=True,
+    )
 
+    # MAUVE expects list[str], not token IDs
+    results = mauve.compute_mauve(
+        p_text=human_texts,
+        q_text=generated_texts,
+        device_id=0,
+        max_text_length=512,
+        verbose=False,
+    )
+
+    mauve_score = float(results.mauve)
+    print("Mauve results:", mauve_score)
+
+    # Save next to args.samples_path
+    output_path = os.path.splitext(samples_path)[0] + "_mauve.json"
+
+    with open(output_path, "w") as f:
+        json.dump(
+            {
+                "mauve": mauve_score,
+                "samples_path": samples_path,
+            },
+            f,
+            indent=4,
+        )
+
+    print(f"MAUVE result saved to: {output_path}")
+    # generated_token_ids = []
+    # samples_generated_token_ids = []
+    # for text in texts:
+    #     token_ids = model_tokenizer.encode(text, add_special_tokens=False)
+    #     samples_generated_token_ids.append(token_ids)
+    # print("torch.tensor(samples_generated_token_ids).shape: ", torch.tensor(samples_generated_token_ids).shape)
+    '''
     unigram_entropy = empirical_entropy(generated_token_ids)
     distinct_1 = distinct_n(generated_token_ids)
     unigram_entropy_per_sample = empirical_entropy_per_sample(samples_generated_token_ids)
@@ -116,6 +152,7 @@ def main(args):
     nll = total_nll / total_tokens
     ppl = np.exp(total_nll / total_tokens)
     acc = total_acc / total_tokens
+
     metrics = {
         "file": Path(args.samples_path).stem,
         "pretrained_model": args.pretrained_model,
@@ -128,15 +165,12 @@ def main(args):
         # Diversity metrics
         "unigram_entropy": unigram_entropy,
         "distinct_1": distinct_1,
-        "unigram_entropy_per_sample": (
-            sum(unigram_entropy_per_sample)
-            / len(unigram_entropy_per_sample)
-        ),
+        "unigram_entropy_per_sample": sum(unigram_entropy_per_sample) / len(unigram_entropy_per_sample),
 
-        "per_sample": per_sample,
+        "per_sample": per_sample
     }
 
-
+    json.dumps(metrics, indent=4)
     print("=== RESULTS ===")
     print("\n".join(map(str, [
         f"ppl={metrics['ppl']}",
@@ -145,20 +179,7 @@ def main(args):
         f"unigram_entropy_per_sample={metrics['unigram_entropy_per_sample']}",
     ])))
     print("===============")
-
-
-    # Save nicely formatted JSON
-    metrics_path = hydra.utils.to_absolute_path(args.metrics_path)
-
-    with open(metrics_path, "w", encoding="utf-8") as f:
-        json.dump(
-            metrics,
-            f,
-            indent="\t",
-            ensure_ascii=False
-        )
-
-    print(f"Metrics saved to: {metrics_path}")
+    '''
 
 if __name__ == "__main__":
     main()

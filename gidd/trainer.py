@@ -28,14 +28,14 @@ class DiffusionTrainer(nn.Module):
         self.dtype = dtype if dtype else self.dtype
         return super().to(device, dtype)
 
-    def forward(self, batch, kl_loss=False, use_trained_scaling_factor=False):
+    def forward(self, batch, kl_loss=False, use_trained_scaling_factor=False, rm_self_attention=False):
         batch_size = batch["input_ids"].size(0)
 
         with torch.autocast(device_type=self.device.type, dtype=self.dtype):
             t = sample_t(self.config, batch_size, device=self.device)
             z_t = self.noise_schedule.sample_zt(batch["input_ids"], t)
 
-            logits = self.model(z_t, t, kl_loss=kl_loss, use_trained_scaling_factor=use_trained_scaling_factor)
+            logits = self.model(z_t, t, kl_loss=kl_loss, use_trained_scaling_factor=use_trained_scaling_factor, rm_self_attention=rm_self_attention)
 
             loss, _, metrics = self.loss_fn.forward(
                 logits=logits,

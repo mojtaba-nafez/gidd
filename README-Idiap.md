@@ -126,14 +126,232 @@ python gidd/eval/self_correction.py path="/idiap/temp/mnafez/research/gidd/our-p
 python gidd/eval/generative_ppl.py samples_path="/idiap/temp/mnafez/research/gidd/baseline_correct.pt" model_tokenizer=gpt2 pretrained_model=google/gemma-2-9b batch_size=1 metrics_path=samples.json
 
 ====
+====
+====
 
 
-python gidd/eval/generate_samples.py path="/idiap/temp/mnafez/research/gidd/our-pt-checkpoints/cscs-trained/pt-p-0.2-small-nvib" samples_path="/idiap/temp/mnafez/research/gidd/samples1.pt" num_samples=32 num_denoising_steps=128 batch_size=16
+python gidd/eval/generate_samples.py path="/idiap/temp/mnafez/research/gidd/our-pt-checkpoints/cscs-trained/pt-p-0.2-small-nvib" samples_path="/idiap/temp/mnafez/research/gidd/samples1.pt" num_samples=128 num_denoising_steps=128 batch_size=32
+
+python gidd/eval/generative_ppl.py samples_path="/idiap/temp/mnafez/research/gidd/samples1.pt" model_tokenizer=gpt2 pretrained_model=google/gemma-2-9b batch_size=8 metrics_path=samples1.json
+
+python gidd/eval/self_correction.py path="/idiap/temp/mnafez/research/gidd/our-pt-checkpoints/cscs-trained/pt-p-0.2-small-nvib" samples_path="/idiap/temp/mnafez/research/gidd/samples1.pt " corrected_samples_path="/idiap/temp/mnafez/research/gidd/baseline_correct1.pt" batch_size=32 num_denoising_steps=128 temp=0.5  latent_noise=True activate_nvib_noise=True
+
+python gidd/eval/generative_ppl.py samples_path="/idiap/temp/mnafez/research/gidd/baseline_correct1.pt" model_tokenizer=gpt2 pretrained_model=google/gemma-2-9b batch_size=8 metrics_path=samples2.json
+
+===
 
 
-python gidd/eval/self_correction.py path="/idiap/temp/mnafez/research/gidd/our-pt-checkpoints/cscs-trained/pt-p-0.2-small-nvib" samples_path="/idiap/temp/mnafez/research/gidd/samples1.pt " corrected_samples_path="/idiap/temp/mnafez/research/gidd/baseline_correct.pt" batch_size=16 num_denoising_steps=32 temp=0.1  latent_noise=False activate_nvib_noise=True
 
 
-python gidd/eval/generative_ppl.py samples_path="/idiap/temp/mnafez/research/gidd/baseline_correct.pt" model_tokenizer=gpt2 pretrained_model=google/gemma-2-9b batch_size=1 metrics_path=samples.json
+python gidd/eval/generate_samples.py path="/idiap/temp/mnafez/research/gidd/our-pt-checkpoints/cscs-trained/pt-p-0.2-small" samples_path="/idiap/temp/mnafez/research/gidd/samples2.pt" num_samples=128 num_denoising_steps=128 batch_size=32
+
+python gidd/eval/generative_ppl.py samples_path="/idiap/temp/mnafez/research/gidd/samples2.pt" model_tokenizer=gpt2 pretrained_model=google/gemma-2-9b batch_size=8 metrics_path=samples3.json
+
+python gidd/eval/self_correction.py path="/idiap/temp/mnafez/research/gidd/our-pt-checkpoints/cscs-trained/pt-p-0.2-small" samples_path="/idiap/temp/mnafez/research/gidd/samples2.pt " corrected_samples_path="/idiap/temp/mnafez/research/gidd/baseline_correct2.pt" batch_size=32 num_denoising_steps=384 temp=0.1
+
+python gidd/eval/generative_ppl.py samples_path="/idiap/temp/mnafez/research/gidd/baseline_correct2.pt" model_tokenizer=gpt2 pretrained_model=google/gemma-2-9b batch_size=8 metrics_path=samples4.json
+
+====
 
 
+
+
+
+
+
+
+python gidd/eval/generative_ppl.py samples_path="/idiap/temp/mnafez/research/gidd/samples1.pt" model_tokenizer=gpt2 pretrained_model=openai-community/gpt2-large batch_size=8 metrics_path=samples1.json
+
+
+python gidd/eval/generative_ppl.py samples_path="/idiap/temp/mnafez/research/gidd/baseline_correct1.pt" model_tokenizer=gpt2 pretrained_model=openai-community/gpt2-large batch_size=8 metrics_path=samples2.json
+
+
+====
+
+
+python gidd/eval/generate_samples.py path="/idiap/temp/mnafez/research/gidd/our-pt-checkpoints/cscs-trained/pt-p-0.2-small" samples_path="/idiap/temp/mnafez/research/gidd/samples2.pt" num_samples=128 num_denoising_steps=128 batch_size=32
+
+python gidd/eval/generative_ppl.py samples_path="/idiap/temp/mnafez/research/gidd/samples2.pt" model_tokenizer=gpt2 pretrained_model=google/gemma-2-9b batch_size=8 metrics_path=samples3.json
+
+
+
+python gidd/eval/self_correction.py path="/idiap/temp/mnafez/research/gidd/our-pt-checkpoints/cscs-trained/pt-p-0.2-small" samples_path="/idiap/temp/mnafez/research/gidd/samples2.pt " corrected_samples_path="/idiap/temp/mnafez/research/gidd/baseline_correct2.pt" batch_size=1 num_denoising_steps=384 temp=0.3 latent_noise=True activate_nvib_noise=True use_trained_scaling_factor=True
+
+
+
+python gidd/eval/self_correction.py \
+  path="/idiap/temp/mnafez/research/gidd/our-pt-checkpoints/cscs-trained/pt-p-0.2-small" \
+  samples_path="/idiap/temp/mnafez/research/gidd/samples2.pt" \
+  corrected_samples_path="/idiap/temp/mnafez/research/gidd/baseline_correct2.pt" \
+  batch_size=32 \
+  num_denoising_steps=384 \
+  temp=0.1 \
+  tokens_per_step=1 \
+  latent_noise=False \
+  activate_nvib_noise=False \
+  use_trained_scaling_factor=False \
+  ++max_fixed_point_escapes=3 \
+  ++escape_num_tokens=1 \
+  ++escape_temp=0.0
+
+python gidd/eval/generative_ppl.py samples_path="/idiap/temp/mnafez/research/gidd/baseline_correct2.pt" model_tokenizer=gpt2 pretrained_model=google/gemma-2-9b batch_size=8 metrics_path=samples4.json
+
+****************
+
+python gidd/eval/self_correction.py \
+  path="/idiap/temp/mnafez/research/gidd/our-pt-checkpoints/cscs-trained/pt-p-0.2-small" \
+  samples_path="/idiap/temp/mnafez/research/gidd/samples2.pt" \
+  corrected_samples_path="/idiap/temp/mnafez/research/gidd/baseline_correct2.pt" \
+  batch_size=1024 \
+  num_denoising_steps=384 \
+  temp=0.3 \
+  tokens_per_step=1 \
+  latent_noise=False \
+  activate_nvib_noise=False \
+  use_trained_scaling_factor=False \
+  ++max_fixed_point_escapes=3 \
+  ++escape_num_tokens=1 \
+  ++escape_temp=0.0
+
+python gidd/eval/generative_ppl.py samples_path="/idiap/temp/mnafez/research/gidd/baseline_correct2.pt" model_tokenizer=gpt2 pretrained_model=google/gemma-2-9b batch_size=8 metrics_path=samples4.json
+
+
+
+
+python gidd/eval/self_correction.py \
+  path="/idiap/temp/mnafez/research/gidd/our-pt-checkpoints/cscs-trained/pt-p-0.2-small-nvib" \
+  samples_path="/idiap/temp/mnafez/research/gidd/samples2.pt" \
+  corrected_samples_path="/idiap/temp/mnafez/research/gidd/baseline_correct3_nvib.pt" \
+  batch_size=1024 \
+  num_denoising_steps=384 \
+  temp=0.3 \
+  tokens_per_step=1 \
+  latent_noise=False \
+  activate_nvib_noise=False \
+  use_trained_scaling_factor=False \
+  ++max_fixed_point_escapes=3 \
+  ++escape_num_tokens=1 \
+  ++escape_temp=0.0
+
+python gidd/eval/generative_ppl.py samples_path="/idiap/temp/mnafez/research/gidd/baseline_correct3_nvib.pt" model_tokenizer=gpt2 pretrained_model=google/gemma-2-9b batch_size=8 metrics_path=samples5_nvib.json
+
+
+
+
+python gidd/eval/self_correction.py \
+  path="/idiap/temp/mnafez/research/gidd/our-pt-checkpoints/cscs-trained/pt-p-0.2-small-nvib" \
+  samples_path="/idiap/temp/mnafez/research/gidd/samples2.pt" \
+  corrected_samples_path="/idiap/temp/mnafez/research/gidd/baseline_correct3_nvib_true.pt" \
+  batch_size=1024 \
+  num_denoising_steps=384 \
+  temp=0.3 \
+  tokens_per_step=1 \
+  latent_noise=False \
+  activate_nvib_noise=True \
+  use_trained_scaling_factor=False \
+  ++max_fixed_point_escapes=3 \
+  ++escape_num_tokens=1 \
+  ++escape_temp=0.0
+
+python gidd/eval/generative_ppl.py samples_path="/idiap/temp/mnafez/research/gidd/baseline_correct3_nvib_true.pt" model_tokenizer=gpt2 pretrained_model=google/gemma-2-9b batch_size=8 metrics_path=samples5_3_nvib_true.json
+
+++++++++++++++++++
+
+
+
+python gidd/eval/self_correction.py \
+  path="/idiap/temp/mnafez/research/gidd/our-pt-checkpoints/cscs-trained/pt-p-0.2-small-nvib" \
+  samples_path="/idiap/temp/mnafez/research/gidd/samples2.pt" \
+  corrected_samples_path="/idiap/temp/mnafez/research/gidd/baseline_correct3_nvib_0-5.pt" \
+  batch_size=1024 \
+  num_denoising_steps=384 \
+  temp=0.5 \
+  tokens_per_step=1 \
+  latent_noise=False \
+  activate_nvib_noise=False \
+  use_trained_scaling_factor=False \
+  ++max_fixed_point_escapes=3 \
+  ++escape_num_tokens=1 \
+  ++escape_temp=0.0
+
+python gidd/eval/generative_ppl.py samples_path="/idiap/temp/mnafez/research/gidd/baseline_correct3_nvib_0-5.pt" model_tokenizer=gpt2 pretrained_model=google/gemma-2-9b batch_size=8 metrics_path=samples5_nvib_0-5.json
+
+
+
+
+python gidd/eval/self_correction.py \
+  path="/idiap/temp/mnafez/research/gidd/our-pt-checkpoints/cscs-trained/pt-p-0.2-small-nvib" \
+  samples_path="/idiap/temp/mnafez/research/gidd/samples2.pt" \
+  corrected_samples_path="/idiap/temp/mnafez/research/gidd/baseline_correct3_nvib_true_0-5.pt" \
+  batch_size=1024 \
+  num_denoising_steps=384 \
+  temp=0.5 \
+  tokens_per_step=1 \
+  latent_noise=False \
+  activate_nvib_noise=True \
+  use_trained_scaling_factor=False \
+  ++max_fixed_point_escapes=3 \
+  ++escape_num_tokens=1 \
+  ++escape_temp=0.0
+
+python gidd/eval/generative_ppl.py samples_path="/idiap/temp/mnafez/research/gidd/baseline_correct3_nvib_true_0-5.pt" model_tokenizer=gpt2 pretrained_model=google/gemma-2-9b batch_size=8 metrics_path=samples5_3_nvib_true_0-5.json
+
+\\\\\\\\\\\\\\\\\\\\\\
+
+
+python gidd/eval/self_correction.py \
+  path="/idiap/temp/mnafez/research/gidd/our-pt-checkpoints/cscs-trained/pt-p-0.2-small-nvib" \
+  samples_path="/idiap/temp/mnafez/research/gidd/samples2.pt" \
+  corrected_samples_path="/idiap/temp/mnafez/research/gidd/baseline_correct3_nvib_0-9.pt" \
+  batch_size=1024 \
+  num_denoising_steps=384 \
+  temp=0.9 \
+  tokens_per_step=1 \
+  latent_noise=False \
+  activate_nvib_noise=False \
+  use_trained_scaling_factor=False \
+  ++max_fixed_point_escapes=3 \
+  ++escape_num_tokens=1 \
+  ++escape_temp=0.0
+
+python gidd/eval/generative_ppl.py samples_path="/idiap/temp/mnafez/research/gidd/baseline_correct3_nvib_0-9.pt" model_tokenizer=gpt2 pretrained_model=google/gemma-2-9b batch_size=8 metrics_path=samples5_nvib_0-5.json
+
+
+00000000000000000000000000000000000
+
+python gidd/eval/self_correction_2.py \
+  path="/idiap/temp/mnafez/research/gidd/our-pt-checkpoints/cscs-trained/pt-p-0.2-small-nvib" \
+  samples_path="/idiap/temp/mnafez/research/gidd/samples2.pt" \
+  corrected_samples_path="/idiap/temp/mnafez/research/gidd/baseline_correct3_nvib_true_0-9-64.pt" \
+  batch_size=1024 \
+  num_denoising_steps=128 \
+  temp=0.5 \
+  tokens_per_step=8 \
+  latent_noise=False \
+  activate_nvib_noise=False \
+  use_trained_scaling_factor=True \
+  ++max_fixed_point_escapes=3 \
+  ++escape_num_tokens=8 \
+  ++escape_temp=0.0
+
+python gidd/eval/generative_ppl.py samples_path="/idiap/temp/mnafez/research/gidd/baseline_correct3_nvib_true_0-9-64.pt" model_tokenizer=gpt2 pretrained_model=google/gemma-2-9b batch_size=8 metrics_path=samples5_3_nvib_true_0-5-64.json
+
+
+
+
+python gidd/eval/self_correction_2.py \
+  path="/idiap/temp/mnafez/research/gidd/our-pt-checkpoints/cscs-trained/pt-p-0.2-small" \
+  samples_path="/idiap/temp/mnafez/research/gidd/samples2.pt" \
+  corrected_samples_path="/idiap/temp/mnafez/research/gidd/baseline_correct3_nvib_true_0-9-64.pt" \
+  batch_size=1024 \
+  num_denoising_steps=128 \
+  temp=0.75 \
+  tokens_per_step=2 \
+  latent_noise=False \
+  activate_nvib_noise=False \
+  use_trained_scaling_factor=True \
+  ++max_fixed_point_escapes=3 \
+  ++escape_num_tokens=8 \
+  ++escape_temp=0.0
+
+python gidd/eval/generative_ppl.py samples_path="/idiap/temp/mnafez/research/gidd/baseline_correct3_nvib_true_0-9-64.pt" model_tokenizer=gpt2 pretrained_model=google/gemma-2-9b batch_size=8 metrics_path=samples5_3_nvib_true_0-5-64.json

@@ -267,7 +267,7 @@ class DDiTBlock(nn.Module):
       return bias_dropout_add_scale_fused_inference
 
 
-  def forward(self, x, rotary_cos_sin, c, seqlens=None, kl_loss=False, use_trained_scaling_factor=False, activate_nvib_noise=False):
+  def forward(self, x, rotary_cos_sin, c, seqlens=None, kl_loss=False, use_trained_scaling_factor=False, activate_nvib_noise=False, rm_self_attention=False):
     batch_size, seq_len = x.shape[0], x.shape[1]
 
     bias_dropout_scale_fn = self._get_bias_dropout_scale()
@@ -300,18 +300,16 @@ class DDiTBlock(nn.Module):
         qkv, cu_seqlens, seq_len, 0., causal=False)
       x = rearrange(x, '(b s) h d -> b s (h d)', b=batch_size)
     else:
-      '''
-      q, k, v = qkv[:, :, 0].transpose(1, 2), qkv[:, :, 1].transpose(1, 2), qkv[:, :, 2].transpose(1, 2)
-      seq_len = q.shape[-2]
-      attn_mask = torch.zeros( (seq_len, seq_len), device=q.device, dtype=q.dtype,)
-      if self.layer_num > -1:
-        attn_mask.fill_diagonal_(torch.finfo(q.dtype).min)
-      x = F.scaled_dot_product_attention(q, k, v, attn_mask=attn_mask, dropout_p=0.0, is_causal=False,)
-
-      '''
-      q, k, v = qkv[:, :, 0].transpose(1, 2), qkv[:, :, 1].transpose(1, 2), qkv[:, :, 2].transpose(1, 2)
-      x = F.scaled_dot_product_attention(q, k, v)
-      
+      if rm_self_attention:
+        q, k, v = qkv[:, :, 0].transpose(1, 2), qkv[:, :, 1].transpose(1, 2), qkv[:, :, 2].transpose(1, 2)
+        seq_len = q.shape[-2]
+        attn_mask = torch.zeros( (seq_len, seq_len), device=q.device, dtype=q.dtype,)
+        if self.layer_num > 4:
+          attn_mask.fill_diagonal_(torch.finfo(q.dtype).min)
+        x = F.scaled_dot_product_attention(q, k, v, attn_mask=attn_mask, dropout_p=0.0, is_causal=False,)
+      else:
+        q, k, v = qkv[:, :, 0].transpose(1, 2), qkv[:, :, 1].transpose(1, 2), qkv[:, :, 2].transpose(1, 2)
+        x = F.scaled_dot_product_attention(q, k, v)
       
       x = rearrange(x, 'b h s d -> b s (h d)', b=batch_size)
 
@@ -381,6 +379,7 @@ class DIT(nn.Module, huggingface_hub.PyTorchModelHubMixin):
 
     blocks = []
     config.model.nvib_layers = config.model.get("nvib_layers", None)
+    
     if config.model.nvib_layers is None:
       config.model.nvib_layers = []
     
@@ -416,12 +415,12 @@ class DIT(nn.Module, huggingface_hub.PyTorchModelHubMixin):
     else:
       return  bias_dropout_add_scale_fused_inference
 
-  def forward(self, indices, sigma, kl_loss=False, latent_noise=False, use_trained_scaling_factor=False, activate_nvib_noise=False):
+  def forward(self, indices, sigma, kl_loss=False, latent_noise=False, use_trained_scaling_factor=False, activate_nvib_noise=False, rm_self_attention=False):
     x = self.vocab_embed(indices)
 
     '''
     mask_id = 50257
-    mask_weight = 0.2
+    mask_weight = 0.1
     mask_embedding_blending = True
     if mask_embedding_blending:
         not_already_masked = (indices != mask_id).unsqueeze(-1)
@@ -455,7 +454,7 @@ class DIT(nn.Module, huggingface_hub.PyTorchModelHubMixin):
           x = x + torch.randn_like(x) * (noise_std * std)
       
       
-      x = self.blocks[i](x, rotary_cos_sin, c, seqlens=None, kl_loss=kl_loss, use_trained_scaling_factor=use_trained_scaling_factor, activate_nvib_noise=activate_nvib_noise)
+      x = self.blocks[i](x, rotary_cos_sin, c, seqlens=None, kl_loss=kl_loss, use_trained_scaling_factor=use_trained_scaling_factor, activate_nvib_noise=activate_nvib_noise, rm_self_attention=rm_self_attention)
     x = self.output_layer(x, c)
 
     x = x.scatter_add(-1, indices.unsqueeze(-1), self.logit_bias.to(x.dtype).expand_as(x))

@@ -4,3 +4,22 @@ pretrained_model: google/gemma-2-9b
 batch_size: 4
 metrics_path: metrics.json
 torch_compile: false
+ 
+training:
+  resume: null
+  seed: 1
+  train_batch_size: 70
+  eval_batch_size: 70
+  num_train_steps: 500_000
+  lr_schedule: cosine
+  warmup_steps: 10000
+  low_discrepancy_sampling: True
+  dtype: bf16
+  compile_model: True
+
+defaults:
+  - logging: default
+  - data: owt
+  - model: small
+  - optimizer: adam
+  - _self_

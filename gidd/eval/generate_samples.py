@@ -22,7 +22,10 @@ def main(args):
     config.training.eval_batch_size = args.batch_size
     dtype = parse_dtype(config.training.dtype)
 
-    sampler = get_sampler(config, model, tokenizer, noise_schedule, min_p=args.min_p)
+    temp = getattr(args, "temperature", 1.0)
+    rm_self_attention = getattr(args, "rm_self_attention", False)
+    print("rm_self_attention:", rm_self_attention)
+    sampler = get_sampler(config, model, tokenizer, noise_schedule, min_p=args.min_p, temperature=temp, rm_self_attention=rm_self_attention)
     model.eval()
 
     samples = []

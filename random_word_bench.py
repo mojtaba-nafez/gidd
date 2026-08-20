@@ -1,6 +1,6 @@
 '''
 python random_word_bench.py path="/idiap/temp/mnafez/research/gidd/our-pt-checkpoints/cscs-trained/pt-p-0.2-small"  batch_size=16 num_denoising_steps=128 temp=0.5  latent_noise=False activate_nvib_noise=False
-''''
+'''
 import numpy as np
 from pathlib import Path
 import torch
@@ -110,9 +110,9 @@ def main(args):
                 device=x.device,
             )
             
-            x[corruption_mask] = random_tokens[corruption_mask]
-            # x[corruption_mask] = 50257 # MDLM
-            # x[corruption_mask] = 50258 # GIDD
+            # x[corruption_mask] = random_tokens[corruption_mask]
+            x[corruption_mask] = 50257 # official MDLM, GIDD
+            # x[corruption_mask] = 50258 # ,my trained GIDD
 
             num_corrupted = corruption_mask.sum().item()
             num_clean = (~corruption_mask).sum().item()
@@ -131,7 +131,7 @@ def main(args):
                 # pred_tokens = model.backbone(x=x, sigma=sigma, class_cond=None, weights=None, mask_embedding_blending=True, remove_self_attn=False).argmax(dim=-1)
                 # pred_tokens = model.backbone(x=x, sigma=sigma, class_cond=None, weights=None, mask_embedding_blending=False, remove_self_attn=True).argmax(dim=-1)
                 # pred_tokens = model.backbone(x=x, sigma=sigma, class_cond=None, weights=None, mask_embedding_blending=True, remove_self_attn=True).argmax(dim=-1)
-                logits = model(x, t, use_trained_scaling_factor=False, activate_nvib_noise=True)
+                logits = model(x, t, use_trained_scaling_factor=False, activate_nvib_noise=False)
                 logits[..., tokenizer.mask_token_id] = -1e6
                 pred_tokens = logits.argmax(dim=-1)
 

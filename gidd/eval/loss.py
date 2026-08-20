@@ -20,6 +20,8 @@ def main(args):
     torch.set_grad_enabled(False)
 
     ckpt_path = hydra.utils.to_absolute_path(args.path)
+    rm_self_attention = bool(getattr(args, "rm_self_attention", False))
+    print("rm_self_attention:", rm_self_attention)
 
     model, noise_schedule, tokenizer, config = load_checkpoint(ckpt_path, device=device)
     if args.use_gpt2:
@@ -44,7 +46,7 @@ def main(args):
             bs = test_batch["input_ids"].size(0)
             test_batch = {k: v.to(device, non_blocking=True) for k, v in test_batch.items()}
             try:
-                loss, metrics = trainer(test_batch, kl_loss=True, use_trained_scaling_factor=False)
+                loss, metrics = trainer(test_batch, kl_loss=True, use_trained_scaling_factor=False, rm_self_attention=rm_self_attention)
             except Exception as e:
                 print(f"Error occurred while processing batch: {e}")
                 continue

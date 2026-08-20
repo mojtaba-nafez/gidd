@@ -10,3 +10,13 @@ tokens_per_step: 1
 metrics_path: metrics.csv
 latent_noise: False
 activate_nvib_noise: False
+use_trained_scaling_factor: False
+
+# Psi options
+# "ancestral" is the exact control; "max-rescale" is the recommended first test.
+psi_mode: max-rescale
+psi_eta: 0.02
+psi_kappa: 0.98
+psi_t_min: 0.0
+psi_t_max: 1.0
+compile_step: false
